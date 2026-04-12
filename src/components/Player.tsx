@@ -7,9 +7,7 @@ import { twMerge } from 'tailwind-merge';
 import { TimerIcon } from './TimerIcon';
 import { RepeatMode } from '../types';
 
-function cn(...inputs: ClassValue[]) {
-  return twMerge(clsx(inputs));
-}
+import { cn } from '@/lib/utils';
 
 interface PlayerProps {
   onClose?: () => void;

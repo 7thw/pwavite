@@ -2,6 +2,62 @@
 
 @theme {
   --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+
+  /* Brand Colors */
+  --color-nightly: oklch(29.2% 0.054116 245.9);
+  --color-daily: oklch(67.2% 0.111772 193.3);
+  --color-master: oklch(63.8% 0.191358 16.4);
+  --color-insight: oklch(50.9% 0.07042 236.4);
+
+  /* Finger Print Colors */
+  --color-digit-eight: oklch(89% 0.18 99);
+  --color-digit-seven: oklch(67.2% 0.111772 193.3);
+  --color-digit-six: oklch(36.2% 0.086183 251.5);
+  --color-digit-five: oklch(53% 0.122 310);
+  --color-digit-four: oklch(70% 0.078 314);
+  --color-digit-three: oklch(63.8% 0.191358 16.4);
+  --color-digit-two: oklch(67% 0.176 45);
+  --color-digit-one: oklch(89% 0.18 99);
+
+  /* Archangel Colors */
+  --color-archangel-ariel-base: oklch(81.4% 0.07697 356.9);
+  --color-archangel-ariel-overlay: oklch(81.4% 0.07697 356.9);
+  --color-archangel-azrael-base: oklch(75% 0.04 350);
+  --color-archangel-azrael-overlay: oklch(75% 0.04 350);
+  --color-archangel-chamuel-base: oklch(88% 0.08 175);
+  --color-archangel-chamuel-overlay: oklch(88% 0.08 175);
+  --color-archangel-gabriel-base: oklch(92% 0.15 95);
+  --color-archangel-gabriel-overlay: oklch(92% 0.15 95);
+  --color-archangel-haniel-base: oklch(88% 0.04 235);
+  --color-archangel-haniel-overlay: oklch(88% 0.04 235);
+  --color-archangel-jeremiel-base: oklch(45% 0.12 320);
+  --color-archangel-jeremiel-overlay: oklch(45% 0.12 320);
+  --color-archangel-jophiel-base: oklch(78% 0.09 15);
+  --color-archangel-jophiel-overlay: oklch(78% 0.09 15);
+  --color-archangel-metatron-base: oklch(82% 0.06 340);
+  --color-archangel-metatron-overlay: oklch(82% 0.06 150);
+  --color-archangel-michael-base: oklch(40% 0.15 270);
+  --color-archangel-michael-overlay: oklch(40% 0.15 270);
+  --color-archangel-raphael-base: oklch(55% 0.12 150);
+  --color-archangel-raphael-overlay: oklch(55% 0.12 150);
+  --color-archangel-raquel-base: oklch(70% 0.1 210);
+  --color-archangel-raquel-overlay: oklch(70% 0.1 210);
+  --color-archangel-raziel-base: oklch(76.5% 0.125534 311.5);
+  --color-archangel-raziel-ring-one: oklch(76.5% 0.125534 311.5);
+  --color-archangel-raziel-ring-two: oklch(66.4% 0.110745 275.9);
+  --color-archangel-raziel-ring-three: oklch(73.7% 0.073905 245.8);
+  --color-archangel-raziel-ring-four: oklch(84.4% 0.110448 140.2);
+  --color-archangel-raziel-ring-five: oklch(92.5% 0.123352 95.7);
+  --color-archangel-raziel-ring-six: oklch(87.1% 0.104338 72.7);
+  --color-archangel-raziel-ring-seven: oklch(74.8% 0.140527 11.7);
+  --color-archangel-raziel-ring-eight: oklch(62.7% 0.227454 12.1);
+  --color-archangel-raziel-overlay: oklch(100% 0.00011 271.152);
+  --color-archangel-sandolphon-base: oklch(80% 0.1 195);
+  --color-archangel-sandolphon-overlay: oklch(80% 0.1 195);
+  --color-archangel-uriel-base: oklch(90% 0.05 85);
+  --color-archangel-uriel-overlay: oklch(90% 0.05 85);
+  --color-archangel-zadkiel-base: oklch(45% 0.18 260);
+  --color-archangel-zadkiel-overlay: oklch(45% 0.18 260);
 }
 
 @layer base {
