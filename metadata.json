@@ -1,0 +1,5 @@
+{
+  "name": "Realigna Audio",
+  "description": "A professional PWA audio player optimized for iOS background playback and native media controls.",
+  "requestFramePermissions": []
+}
