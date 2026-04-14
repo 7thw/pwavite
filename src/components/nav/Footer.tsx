@@ -1,6 +1,8 @@
 import React from 'react';
 import { cn } from '@/lib/utils';
-import { Home, Search, Library, User } from 'lucide-react';
+import { HomeIcon, MediatationIcon, EnergyIcon, ProfileIcon } from './NavIcons';
+import { AnimateIcon } from '@/components/animate-ui/icons/icon';
+import { Moon } from '@/components/animate-ui/icons/moon';
 
 interface FooterProps {
   tone?: 'light' | 'dark';
@@ -16,16 +18,21 @@ export function Footer({ tone = 'dark', className }: FooterProps & { className?:
       className
     )}>
       <button className="p-4 text-white hover:bg-white/10 rounded-2xl transition-colors">
-        <Home size={24} />
+        <HomeIcon size={24} />
       </button>
       <button className="p-4 text-white/40 hover:text-white hover:bg-white/10 rounded-2xl transition-colors">
-        <Search size={24} />
+        <AnimateIcon animateOnTap>
+          <Moon size={24} />
+        </AnimateIcon>
       </button>
       <button className="p-4 text-white/40 hover:text-white hover:bg-white/10 rounded-2xl transition-colors">
-        <Library size={24} />
+        <MediatationIcon size={24} />
       </button>
       <button className="p-4 text-white/40 hover:text-white hover:bg-white/10 rounded-2xl transition-colors">
-        <User size={24} />
+        <EnergyIcon size={24} />
+      </button>
+      <button className="p-4 text-white/40 hover:text-white hover:bg-white/10 rounded-2xl transition-colors">
+        <ProfileIcon size={24} />
       </button>
     </div>
   );

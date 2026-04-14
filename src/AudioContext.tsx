@@ -12,6 +12,7 @@ interface AudioContextType {
   seek: (time: number) => void;
   setVolume: (volume: number) => void;
   setTrackIndex: (index: number) => void;
+  setPlaylist: (tracks: Track[]) => void;
   setSleepTimer: (duration: number) => void;
   setRepeatMode: (mode: RepeatMode) => void;
   currentTrack: Track | null;
@@ -19,9 +20,9 @@ interface AudioContextType {
 
 const AudioContext = createContext<AudioContextType | null>(null);
 
-export const AudioProvider: React.FC<{ children: React.ReactNode; initialPlaylist: Track[] }> = ({ children, initialPlaylist }) => {
+export const AudioProvider: React.FC<{ children: React.ReactNode; initialPlaylist?: Track[] }> = ({ children, initialPlaylist = [] }) => {
   const audioRef = useRef<HTMLAudioElement | null>(null);
-  const [playlist] = useState<Track[]>(initialPlaylist);
+  const [playlist, setPlaylist] = useState<Track[]>(initialPlaylist);
   const [state, setState] = useState<AudioState>({
     isPlaying: false,
     currentTime: 0,
@@ -252,7 +253,7 @@ export const AudioProvider: React.FC<{ children: React.ReactNode; initialPlaylis
 
   return (
     <AudioContext.Provider value={{ 
-      state, playlist, play, pause, toggle, next, previous, seek, setVolume, setTrackIndex, setSleepTimer, setRepeatMode, currentTrack 
+      state, playlist, play, pause, toggle, next, previous, seek, setVolume, setTrackIndex, setPlaylist, setSleepTimer, setRepeatMode, currentTrack 
     }}>
       {children}
     </AudioContext.Provider>

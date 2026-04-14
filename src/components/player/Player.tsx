@@ -1,11 +1,9 @@
 import React from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { Play, Pause, SkipBack, SkipForward, Volume2, ListMusic, ChevronDown, Repeat, Heart } from 'lucide-react';
-import { useAudio } from '../AudioContext';
-import { clsx, type ClassValue } from 'clsx';
-import { twMerge } from 'tailwind-merge';
-import { TimerIcon } from './TimerIcon';
-import { RepeatMode } from '../types';
+import { TimerIcon } from '@/components/animate-ui/icons/timer';
+import { useAudio } from '../../AudioContext';
+import { RepeatMode } from '../../types';
 
 import { cn } from '@/lib/utils';
 

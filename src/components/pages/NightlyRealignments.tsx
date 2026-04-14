@@ -1,9 +1,9 @@
 import React from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { ArrowLeft, ArrowRight, Info, Plus, Check, X, Play, Pause, RotateCcw, RotateCw } from 'lucide-react';
+import { ArrowLeft, ArrowRight, Info, Plus, Check, X, Play } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { LogoRingsUnified } from '@/components/brand/Logo';
-import { useAudio } from '../AudioContext';
+import { useAudio } from '../../AudioContext';
 
 interface NightlyCategory {
   id: string;
@@ -71,7 +71,7 @@ export function NightlyRealignments({ onBack }: { onBack: () => void }) {
   const [selectedTracks, setSelectedTracks] = React.useState<Record<string, NightlyTrack>>({});
   const [infoTrack, setInfoTrack] = React.useState<NightlyTrack | null>(null);
   
-  const { state, toggle, seek, setPlaylist, setTrackIndex } = useAudio();
+  const { state, toggle, setPlaylist, setTrackIndex } = useAudio();
 
   const currentCategory = NIGHTLY_DATA[currentCatIndex];
 
@@ -100,6 +100,10 @@ export function NightlyRealignments({ onBack }: { onBack: () => void }) {
       setPlaylist(tracks);
       setTrackIndex(0);
       setView('playlist');
+      // Auto-play
+      if (!state.isPlaying) {
+        setTimeout(() => toggle(), 100);
+      }
     }
   };
 
@@ -271,37 +275,6 @@ export function NightlyRealignments({ onBack }: { onBack: () => void }) {
                       </span>
                     </div>
                   ))}
-                </div>
-
-                <div className="pt-8 space-y-8">
-                  <div className="flex items-center justify-center gap-12">
-                    <button className="text-white/40 hover:text-white transition-colors">
-                      <RotateCcw size={32} />
-                    </button>
-                    <button 
-                      onClick={toggle}
-                      className="size-20 bg-white/20 backdrop-blur-md rounded-full flex items-center justify-center text-white border-2 border-white/20 hover:scale-105 active:scale-95 transition-all"
-                    >
-                      {state.isPlaying ? <Pause size={32} fill="currentColor" /> : <Play size={32} fill="currentColor" className="ml-1" />}
-                    </button>
-                    <button className="text-white/40 hover:text-white transition-colors">
-                      <RotateCw size={32} />
-                    </button>
-                  </div>
-
-                  <div className="space-y-2">
-                    <div className="relative h-1 w-full bg-white/10 rounded-full overflow-hidden">
-                      <motion.div 
-                        className="absolute top-0 left-0 h-full bg-[#4fbdbb]"
-                        style={{ width: `${(state.currentTime / state.duration) * 100}%` }}
-                      />
-                    </div>
-                    <div className="flex justify-between text-xs font-bold text-white/40">
-                      <span>00:03</span>
-                      <span>2:45:00</span>
-                    </div>
-                  </div>
-                </div>
               </motion.div>
             )}
           </AnimatePresence>

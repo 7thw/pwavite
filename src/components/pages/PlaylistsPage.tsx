@@ -3,6 +3,8 @@ import { cn } from '@/lib/utils';
 import { LogoRingsUnified } from '@/components/brand/Logo';
 import { motion } from 'motion/react';
 
+const bg = "light";
+
 interface CardStaticProps {
   bg: string;
   title: string;
@@ -17,12 +19,12 @@ export function CardStatic({ bg, title, subtitle, archangel, onClick }: CardStat
       onClick={onClick}
       className="block w-full outline-none group active:scale-95 transition-transform text-left"
     >
-      <div className={cn("relative py-4 px-5 w-full aspect-[4/3] rounded-3xl overflow-visible border-none shadow-xl", bg)}>
+      <div className={cn("relative py-4 px-5 w-full aspect-4/3 rounded-xl overflow-visible border-none shadow-xl", bg)}>
         <div className="flex flex-col h-full relative z-10 text-white">
           <h3 className="text-white text-xl md:text-2xl font-bold leading-tight">{title}</h3>
           <p className="text-sm md:text-base font-normal opacity-80 leading-tight">{subtitle}</p>
 
-          <div className="absolute -bottom-8 left-1/2 -translate-x-1/2 w-20 h-20 rounded-full bg-white shadow-2xl flex items-center justify-center pointer-events-none group-hover:scale-110 transition-transform duration-500">
+          <div className="absolute -bottom-12 left-1/2 -translate-x-1/2 w-20 h-20 rounded-full bg-white shadow-2xl flex items-center justify-center pointer-events-none group-hover:scale-110 transition-transform duration-500">
             <div className="translate-x-[1px] -translate-y-[4px] w-full h-full p-2">
               <LogoRingsUnified 
                 variation="archangels" 
@@ -77,7 +79,7 @@ export function PlaylistsPage({ onOpenPlayer, onOpenMeditations, onOpenNightly, 
   ];
 
   return (
-    <div id="playlists-page" className="relative w-full max-w-md mx-auto px-6 pt-12 pb-64 min-h-screen flex flex-col bg-[#0a0502]">
+    <div id="playlists-page" className="light relative w-full max-w-md mx-auto px-6 pt-12 pb-64 min-h-screen flex flex-col bg-background">
       {/* Header Typography */}
       <motion.div 
         initial={{ opacity: 0, y: -20 }}
@@ -93,7 +95,7 @@ export function PlaylistsPage({ onOpenPlayer, onOpenMeditations, onOpenNightly, 
         initial={{ opacity: 0, scale: 0.95 }}
         animate={{ opacity: 1, scale: 1 }}
         transition={{ delay: 0.1 }}
-        className="w-full aspect-[16/9] relative rounded-[32px] overflow-hidden shadow-2xl mb-10 shrink-0 border border-white/5"
+        className="w-full aspect-[16/9] relative rounded-xl overflow-hidden shadow-2xl mb-10 shrink-0 border border-white/5"
       >
         <img 
           src="https://picsum.photos/seed/realigna-hero/800/450" 
