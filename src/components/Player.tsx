@@ -218,7 +218,7 @@ export const Player: React.FC<PlayerProps> = ({ onClose }) => {
             </div>
 
             {/* Volume Trigger Button */}
-            <div className="relative">
+            <div className="relative flex items-center gap-2">
               <AnimatePresence>
                 {showVolumePill && (
                   <motion.div 
@@ -249,6 +249,23 @@ export const Player: React.FC<PlayerProps> = ({ onClose }) => {
                   </motion.div>
                 )}
               </AnimatePresence>
+
+              {/* Real-time Volume Meter */}
+              <div className="flex items-end gap-[2px] h-4 px-1">
+                {[...Array(5)].map((_, i) => (
+                  <motion.div
+                    key={i}
+                    initial={false}
+                    animate={{ 
+                      height: `${(i + 1) * 20}%`,
+                      opacity: state.volume >= (i + 1) / 5 ? 1 : 0.2,
+                      backgroundColor: state.volume >= (i + 1) / 5 ? 'white' : 'rgba(255,255,255,0.2)'
+                    }}
+                    className="w-[3px] rounded-full"
+                  />
+                ))}
+              </div>
+
               <button 
                 onClick={handleVolumeButtonClick}
                 className={cn(

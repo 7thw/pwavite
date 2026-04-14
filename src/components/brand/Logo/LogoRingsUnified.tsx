@@ -507,6 +507,7 @@ const Ring = ({
   shouldReduceMotion: boolean;
   animStart?: number;
   customStrokeWidth?: number;
+  key?: React.Key;
 }) => {
   const configKey =
     Object.keys(ID_MAP).find((key) => ID_MAP[key] === ring.id) || "";

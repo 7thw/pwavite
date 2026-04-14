@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useState, useEffect } from "react";
+import React, { useRef, useState, useEffect } from "react";
 import {
   motion,
   useTime,
@@ -9,13 +9,12 @@ import {
   useMotionValueEvent,
 } from "motion/react";
 
-import { LogoRingsUnified } from "@/components/brand/Logo/LogoRingsUnified";
-import { LogoTypeRe } from "@/components/brand/Logo/LogoType";
-import { LogoTypeAligna } from "@/components/brand/Logo/LogoType";
+import { LogoRingsUnified, LogoTypeRe, LogoTypeAligna } from "@/components/brand/Logo";
 
 interface SplashAnimationProps {
   onComplete?: () => void;
   duration?: number;
+  key?: React.Key;
 }
 
 export function SplashAnimation({
