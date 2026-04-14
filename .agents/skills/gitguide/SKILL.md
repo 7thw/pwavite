@@ -1,77 +1,64 @@
 ---
 name: gitguide
-description: This SKILL defines the standard operating procedures for integrating local AI development agents (e.g., Antigravity) with export-first AI generation environments (e.g., Google AI Studio).
+description: Standard Operating Procedures (SOP) intended for Local IDE Agents (Antigravity) mapping the workflow between Antigravity, Google Stitch, Google AI Studio, and AirWeave.
 ---
 
+# Antigravity Developer Guide
+
+You are operating within the local Antigravity IDE environment. You are the orchestrator of the multi-agent pipeline, bridging design prototypes (Stitch) and generative components (AI Studio) down to a stable, deployable state.
+
 ## 1. Branch Architecture
-To prevent code loss and coordinate between different AI agents with varying Git capabilities, we enforce a strict 3-branch architecture:
 
-*   **`main`**: The source of truth and production releases. Must be impeccably clean and working.
-*   **`local`**: The primary working environment for IDE-based agents (Antigravity). Safe to commit, test, and preview changes incrementally.
-*   **`studio`**: An isolated export branch specifically for Google AI Studio. **Treated as an isolated snapshot.**
+We enforce a strict 3-branch architecture to coordinate safe code transitions:
 
-## 2. Agent Constraints
+*   **`prod`**: The source of truth and active live deployment branch. Code here must be flawlessly verified.
+*   **`local`**: YOUR primary working environment. All manual editing, testing (`pnpm dev`), and conflict resolution happens here. Code from generative tools (like AI Studio) is merged into this branch.
+*   **`main`**: The **Generative Staging Target**. Because tools like Google AI Studio default to pushing here, `main` does NOT represent production. It acts as a messy 'drop-zone' for cloud agents to dump their snapshots.
 
-### Google AI Studio Rules
-*   **Role:** Code Generator & Writer.
-*   **Behavior:** Treat `studio` purely as an export destination. AI Studio should not attempt complex branch checking/pulling strategies. 
-*   **DANGER:** AI studio handles context exports as snapshots. When it pushes code, it pushes the snapshot. This can overwrite and delete files if it doesn't have the full workspace loaded. Thus, it ONLY pushes to `studio`.
+## 2. Multi-Agent Integration Roles
 
-### Antigravity Rules
-*   **Role:** Primary Developer & Reviewer.
-*   **Behavior:** Treat `studio` as an external upstream. Pull changes down to review them safely, resolve conflicts, and promote them to `main`. Do not assume AI Studio's commits are perfectly merged with local work.
+### A. Google AI Studio
+*   **Role:** Cloud-based code generator and prototyper.
+*   **Behavior (Export-Only):** AI Studio cannot securely pull from private remote branches natively. It instead fetches from public URLs using `degit` and pushes back as an isolated snapshot exclusively to the `main` branch.
+*   **Your Action:** When AI Studio completes a feature, you must review its output:
+    1. `git fetch origin`
+    2. Ensure you are on `local`.
+    3. `git merge origin/main`
+    4. Resolve structural conflicts, test locally, and prevent any of AI Studio's hallucinatory deletions from clobbering existing functionality.
 
-## 3. Workflow Procedures
+### B. Google Stitch (Design-to-Code)
+*   **Role:** Rapid prototyping and design token generation.
+*   **Your Action:** When transitioning designs to code, utilize the Google Stitch MCP Server (if enabled). You can prompt directly against the Stitch projects using the IDE to construct the exact components designed by the user, skipping manual Figma imports. 
 
-### Phase A: Setup & Scaffolding (Run Locally)
-1. Ensure the workspace is current.
-2. Ensure working branches exist:
-   ```bash
-   git branch studio
-   git branch local
-   ```
+### C. AirWeave
+*   **Role:** Local orchestration platform.
+*   **Your Action:** AirWeave runs in parallel connecting your MCP servers and background tasks. Rely on AirWeave configuration files for advanced MCP networking outside of basic IDE prompts.
 
-### Phase B: Local Development (Antigravity)
-When coding using the Antigravity IDE:
-1. Ensure you are on the `local` branch.
+## 3. Workflow Procedure Checklist
+
+When initiating a new feature cycle or pulling down AI Studio code:
+
+1. **Verify State:** Ensure you are on the `local` branch. Do not code directly on `prod`.
    ```bash
    git checkout local
    ```
-2. Make changes, test via `pnpm dev`, commit, and push.
+2. **Pull Agent Generatives:** Pull whatever AI Studio has dropped into `main`.
    ```bash
-   git add .
-   git commit -m "feat: [describe changes]"
-   git push -u origin local
+   git merge origin/main
    ```
-
-### Phase C: Prepping Google AI Studio (`local` -> `studio`)
-Before generating code in AI Studio, snapshot the latest code onto the `studio` branch.
-1. Sync `studio` up with `local`:
+3. **Refine & Build:** Utilize IDE tools. Run tests, start `pnpm dev`, iterate on code, connect to Stitch MCP for UI fidelity.
+4. **Deploy:** Once the integration is completely stable and the user approves the outcome:
    ```bash
-   git checkout studio
+   git checkout prod
    git merge local
-   git push origin studio
+   git push origin prod
    ```
-2. Launch Google AI Studio, pull/sync from the `studio` branch to load the latest snapshot into its context.
-3. Generate code and execute the integration by deploying/pushing the generated changes back to the `studio` branch on GitHub.
-
-### Phase D: Multi-Agent Code Review (`studio` -> `local`)
-After AI Studio pushes to GitHub, review the changes locally to catch hallucinatory deletions or overwrites.
-1. Fetch AI Studio's work:
+5. **Reset:** Switch back to `local` to continue further iteration.
    ```bash
-   git fetch origin
    git checkout local
    ```
-2. Merge the AI's code into your primary working branch:
-   ```bash
-   git merge origin/studio
-   ```
-3. Run dev tools (`pnpm dev`) to ensure UI components and packages weren't accidentally clobbered by a bad snapshot push.
 
-### Phase E: Release (`local` -> `main`)
-1. Once code generated by both agents is consolidated on `local` and passes structural review, promote it to stable.
-   ```bash
-   git checkout main
-   git merge local
-   git push origin main
-   ```
+## Appendix: AI Studio Build Mode Context
+- AI Studio has full-stack runtimes (Firebase, node.js) but should be sandboxed in `main`.
+- AI Studio uses `requestFramePermissions` in `metadata.json` to handle hardware device access.
+- See `.agents/skills/aistudio-gitguide/SKILL.md` for the explicit rules targeting AI Studio itself on how it circumvents private repository limits via temporary public access.
