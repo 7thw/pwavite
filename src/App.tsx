@@ -6,9 +6,15 @@
 import React from 'react';
 import { AudioProvider, useAudio } from './AudioContext';
 import { Player } from './components/Player';
+import { PlaylistsPage } from './components/PlaylistsPage';
+import { MeditationLibrary } from './components/MeditationLibrary';
+import { NightlyRealignments } from './components/NightlyRealignments';
+import { MasterYourEnergy } from './components/MasterYourEnergy';
+import { Footer } from './components/Footer';
 import { Track } from './types';
 import { Play, Pause, SkipForward } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
+import { SplashAnimation } from './components/brand/SplashAnimation';
 
 const INITIAL_PLAYLIST: Track[] = [
   {
@@ -37,47 +43,6 @@ const INITIAL_PLAYLIST: Track[] = [
   }
 ];
 
-const Library = ({ onOpenPlayer }: { onOpenPlayer: () => void }) => {
-  const { playlist, currentTrack, setTrackIndex } = useAudio();
-
-  return (
-    <div className="min-h-screen bg-[#0a0502] text-white p-6 pb-24">
-      <header className="mb-8">
-        <h1 className="text-4xl font-bold tracking-tight">Library</h1>
-        <p className="text-white/40 mt-1">Your favorite tracks</p>
-      </header>
-
-      <div className="grid grid-cols-1 gap-4">
-        {playlist.map((track, index) => (
-          <button 
-            key={track.id}
-            onClick={() => {
-              setTrackIndex(index);
-              onOpenPlayer();
-            }}
-            className={`flex items-center gap-4 p-3 rounded-2xl transition-all duration-300 ${
-              currentTrack?.id === track.id ? 'bg-white/10' : 'hover:bg-white/5'
-            }`}
-          >
-            <img 
-              src={track.artwork} 
-              alt={track.title} 
-              className="size-14 rounded-xl object-cover shadow-lg"
-              referrerPolicy="no-referrer"
-            />
-            <div className="flex-1 text-left">
-              <p className={`font-semibold ${currentTrack?.id === track.id ? 'text-white' : 'text-white/80'}`}>
-                {track.title}
-              </p>
-              <p className="text-sm text-white/40">{track.artist}</p>
-            </div>
-          </button>
-        ))}
-      </div>
-    </div>
-  );
-};
-
 const MiniPlayer = ({ onOpenPlayer }: { onOpenPlayer: () => void }) => {
   const { state, currentTrack, toggle, next } = useAudio();
 
@@ -85,10 +50,10 @@ const MiniPlayer = ({ onOpenPlayer }: { onOpenPlayer: () => void }) => {
 
   return (
     <motion.div 
-      initial={{ y: 100 }}
-      animate={{ y: 0 }}
-      exit={{ y: 100 }}
-      className="fixed bottom-6 left-6 right-6 z-40"
+      initial={{ y: 20, opacity: 0 }}
+      animate={{ y: 0, opacity: 1 }}
+      exit={{ y: 20, opacity: 0 }}
+      className="w-full"
     >
       <div 
         onClick={onOpenPlayer}
@@ -131,28 +96,101 @@ const MiniPlayer = ({ onOpenPlayer }: { onOpenPlayer: () => void }) => {
 
 export default function App() {
   const [isPlayerOpen, setIsPlayerOpen] = React.useState(false);
+  const [showSplash, setShowSplash] = React.useState(true);
+  const [currentPage, setCurrentPage] = React.useState<'playlists' | 'meditations' | 'nightly' | 'master'>('playlists');
 
   return (
     <AudioProvider initialPlaylist={INITIAL_PLAYLIST}>
       <div className="relative min-h-screen bg-[#0a0502]">
-        <Library onOpenPlayer={() => setIsPlayerOpen(true)} />
-        
-        <AnimatePresence>
-          {!isPlayerOpen && (
-            <MiniPlayer onOpenPlayer={() => setIsPlayerOpen(true)} />
-          )}
-        </AnimatePresence>
-
-        <AnimatePresence>
-          {isPlayerOpen && (
+        <AnimatePresence mode="wait">
+          {showSplash ? (
+            <SplashAnimation 
+              key="splash"
+              onComplete={() => setShowSplash(false)} 
+              duration={3000} 
+            />
+          ) : (
             <motion.div 
-              initial={{ y: '100%' }}
-              animate={{ y: 0 }}
-              exit={{ y: '100%' }}
-              transition={{ type: 'spring', damping: 25, stiffness: 200 }}
-              className="fixed inset-0 z-50"
+              key="main-content"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              className="relative min-h-screen"
             >
-              <Player onClose={() => setIsPlayerOpen(false)} />
+              <AnimatePresence mode="wait">
+                {currentPage === 'playlists' ? (
+                  <motion.div
+                    key="playlists-page"
+                    initial={{ opacity: 0, x: -20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    exit={{ opacity: 0, x: 20 }}
+                  >
+                    <PlaylistsPage 
+                      onOpenPlayer={() => setIsPlayerOpen(true)} 
+                      onOpenMeditations={() => setCurrentPage('meditations')}
+                      onOpenNightly={() => setCurrentPage('nightly')}
+                      onOpenMaster={() => setCurrentPage('master')}
+                    />
+                  </motion.div>
+                ) : currentPage === 'meditations' ? (
+                  <motion.div
+                    key="meditations-page"
+                    initial={{ opacity: 0, x: 20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    exit={{ opacity: 0, x: -20 }}
+                  >
+                    <MeditationLibrary onBack={() => setCurrentPage('playlists')} />
+                  </motion.div>
+                ) : currentPage === 'nightly' ? (
+                  <motion.div
+                    key="nightly-page"
+                    initial={{ opacity: 0, x: 20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    exit={{ opacity: 0, x: -20 }}
+                  >
+                    <NightlyRealignments onBack={() => setCurrentPage('playlists')} />
+                  </motion.div>
+                ) : (
+                  <motion.div
+                    key="master-page"
+                    initial={{ opacity: 0, x: 20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    exit={{ opacity: 0, x: -20 }}
+                  >
+                    <MasterYourEnergy onBack={() => setCurrentPage('playlists')} />
+                  </motion.div>
+                )}
+              </AnimatePresence>
+              
+              <AnimatePresence>
+                {!isPlayerOpen && (
+                  <MiniPlayer onOpenPlayer={() => setIsPlayerOpen(true)} />
+                )}
+              </AnimatePresence>
+
+              <AnimatePresence>
+                {isPlayerOpen && (
+                  <motion.div 
+                    initial={{ y: '100%' }}
+                    animate={{ y: 0 }}
+                    exit={{ y: '100%' }}
+                    transition={{ type: 'spring', damping: 25, stiffness: 200 }}
+                    className="fixed inset-0 z-50"
+                  >
+                    <Player onClose={() => setIsPlayerOpen(false)} />
+                  </motion.div>
+                )}
+              </AnimatePresence>
+
+              {!isPlayerOpen && (
+                <div className="fixed bottom-0 left-0 right-0 z-40 px-6 pb-8 pt-4 pointer-events-none">
+                  <div className="max-w-md mx-auto flex flex-col gap-3 pointer-events-auto">
+                    <AnimatePresence>
+                      {!isPlayerOpen && <MiniPlayer onOpenPlayer={() => setIsPlayerOpen(true)} />}
+                    </AnimatePresence>
+                    <Footer tone="light" />
+                  </div>
+                </div>
+              )}
             </motion.div>
           )}
         </AnimatePresence>
