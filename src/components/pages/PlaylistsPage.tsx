@@ -1,3 +1,10 @@
+/**
+ * PlaylistsPage – Home / Discovery Page (Light Theme)
+ * The main landing page displaying a hero banner and a 2-column grid
+ * of category cards (Nightly, Daily, Master, Insights).
+ * Each card navigates to its respective sub-page.
+ */
+
 import React from 'react';
 import { cn } from '@/lib/utils';
 import { LogoRingsUnified } from '@/components/brand/Logo';
@@ -5,6 +12,9 @@ import { motion } from 'motion/react';
 
 const bg = "light";
 
+/* ───── CardStatic ─────
+   A reusable category card with gradient background, title/subtitle,
+   and an archangel logo badge overflowing at the bottom. */
 interface CardStaticProps {
   bg: string;
   title: string;
@@ -19,12 +29,13 @@ export function CardStatic({ bg, title, subtitle, archangel, onClick }: CardStat
       onClick={onClick}
       className="block w-full outline-none group active:scale-95 transition-transform text-left"
     >
-      <div className={cn("relative py-4 px-5 w-full aspect-4/3 rounded-xl overflow-visible border-none shadow-xl", bg)}>
+      <div data-component="card-static" className={cn("relative py-4 px-5 w-full aspect-4/3 rounded-xl overflow-visible border-none shadow-xl", bg)}>
         <div className="flex flex-col h-full relative z-10 text-white">
           <h3 className="text-white text-xl md:text-2xl font-bold leading-tight">{title}</h3>
           <p className="text-sm md:text-base font-normal opacity-80 leading-tight">{subtitle}</p>
 
-          <div className="absolute -bottom-12 left-1/2 -translate-x-1/2 w-20 h-20 rounded-full bg-white shadow-2xl flex items-center justify-center pointer-events-none group-hover:scale-110 transition-transform duration-500">
+          {/* ── Archangel Badge ── */}
+          <div className="absolute -bottom-10 left-1/2 -translate-x-1/2 w-18 h-18 rounded-full bg-white shadow-2xl flex items-center justify-center pointer-events-none group-hover:scale-110 transition-transform duration-500">
             <div className="translate-x-[1px] -translate-y-[4px] w-full h-full p-2">
               <LogoRingsUnified 
                 variation="archangels" 
@@ -79,23 +90,30 @@ export function PlaylistsPage({ onOpenPlayer, onOpenMeditations, onOpenNightly, 
   ];
 
   return (
-    <div id="playlists-page" className="light relative w-full max-w-md mx-auto px-6 pt-12 pb-64 min-h-screen flex flex-col bg-background">
-      {/* Header Typography */}
+    <div id="playlists-page" data-component="playlists-page" className="light relative w-full max-w-md mx-auto px-6 pt-6 pb-64 min-h-screen flex flex-col bg-background">
+
+      {/* ───── Header Typography ─────
+           Animated page title and subtitle. */}
       <motion.div 
+        id="playlists-header"
+        data-component="playlists-header"
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
-        className="w-full mb-6 shrink-0"
+        className="w-full mb-4 shrink-0"
       >
-        <h1 className="text-3xl font-bold leading-tight text-white tracking-tight">Discover your</h1>
-        <h2 className="text-xl text-white/40 leading-tight tracking-tight">Unique Energetic Fingerprint</h2>
+        <h2 className="text-3xl font-bold leading-tight text-foreground tracking-tight">Discover your</h2>
+        <h3 className="text-xl text-foreground/60 leading-tight tracking-tight">Unique Energetic Fingerprint</h3>
       </motion.div>
 
-      {/* Hero Banner Image */}
+      {/* ───── Hero Banner Image ─────
+           Wide aspect-ratio photo with gradient overlay. */}
       <motion.div 
+        id="playlists-hero"
+        data-component="playlists-hero"
         initial={{ opacity: 0, scale: 0.95 }}
         animate={{ opacity: 1, scale: 1 }}
         transition={{ delay: 0.1 }}
-        className="w-full aspect-[16/9] relative rounded-xl overflow-hidden shadow-2xl mb-10 shrink-0 border border-white/5"
+        className="w-full aspect-16/6 relative rounded-xl overflow-hidden shadow-2xl mb-4 shrink-0 border border-white/5"
       >
         <img 
           src="https://picsum.photos/seed/realigna-hero/800/450" 
@@ -106,9 +124,10 @@ export function PlaylistsPage({ onOpenPlayer, onOpenMeditations, onOpenNightly, 
         <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent" />
       </motion.div>
 
-      {/* Categories Section */}
-      <div className="w-full flex-1">
-        <div className="grid grid-cols-2 gap-x-4 gap-y-12">
+      {/* ───── Categories Grid ─────
+           2-column card grid, each card stagger-animated on mount. */}
+      <div id="playlists-categories" data-component="playlists-categories" className="w-full flex-1">
+        <div className="grid grid-cols-2 gap-x-4 gap-y-8">
           {cards.map((c, i) => (
             <motion.div
               key={i}

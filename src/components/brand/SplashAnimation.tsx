@@ -11,6 +11,8 @@ import {
 
 import { LogoRingsUnified, LogoTypeRe, LogoTypeAligna } from "@/components/brand/Logo";
 
+const bg = "dark";
+
 interface SplashAnimationProps {
   onComplete?: () => void;
   duration?: number;

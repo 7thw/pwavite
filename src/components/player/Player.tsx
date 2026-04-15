@@ -1,3 +1,10 @@
+/**
+ * Player – Full-Screen Audio Player
+ * Immersive playback experience with blurred artwork background,
+ * track info, progress bar, sleep timer, volume control,
+ * repeat mode, favorites, and an "Up Next" playlist overlay.
+ */
+
 import React from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { Play, Pause, SkipBack, SkipForward, Volume2, ListMusic, ChevronDown, Repeat, Heart } from 'lucide-react';
@@ -18,6 +25,8 @@ export const Player: React.FC<PlayerProps> = ({ onClose }) => {
   const [showVolumePill, setShowVolumePill] = React.useState(false);
   const volumeTimerRef = React.useRef<NodeJS.Timeout | null>(null);
 
+  /* ───── Sleep Timer Badge Animation ─────
+     Delays showing the duration badge so the icon animation finishes first. */
   React.useEffect(() => {
     if (state.sleepTimerDuration > 0) {
       const timer = setTimeout(() => setShowDuration(true), 800);
@@ -27,9 +36,10 @@ export const Player: React.FC<PlayerProps> = ({ onClose }) => {
     }
   }, [state.sleepTimerDuration]);
 
-  // Show volume pill on volume change
+  /* ───── Volume Pill Auto-Hide ─────
+     Shows the vertical volume slider on any volume change,
+     then auto-hides after 3 seconds of inactivity. */
   React.useEffect(() => {
-    // Only trigger auto-hide if the pill was shown due to a volume change
     setShowVolumePill(true);
     if (volumeTimerRef.current) clearTimeout(volumeTimerRef.current);
     volumeTimerRef.current = setTimeout(() => setShowVolumePill(false), 3000);
@@ -44,13 +54,13 @@ export const Player: React.FC<PlayerProps> = ({ onClose }) => {
       if (volumeTimerRef.current) clearTimeout(volumeTimerRef.current);
     } else {
       setShowVolumePill(true);
-      // When opened via button, we can either let it stay or still auto-hide.
-      // Let's keep the auto-hide but maybe longer (3s)
       if (volumeTimerRef.current) clearTimeout(volumeTimerRef.current);
       volumeTimerRef.current = setTimeout(() => setShowVolumePill(false), 5000);
     }
   };
 
+  /* ───── Favorites (Local Storage) ─────
+     Persists a simple favorites list to localStorage. */
   const [isFavorite, setIsFavorite] = React.useState(false);
 
   React.useEffect(() => {
@@ -74,12 +84,16 @@ export const Player: React.FC<PlayerProps> = ({ onClose }) => {
 
   if (!currentTrack) return null;
 
+  /* ───── Time Formatter ─────
+     Converts seconds to M:SS display string. */
   const formatTime = (time: number) => {
     const minutes = Math.floor(time / 60);
     const seconds = Math.floor(time % 60);
     return `${minutes}:${seconds.toString().padStart(2, '0')}`;
   };
 
+  /* ───── Sleep Timer Cycle ─────
+     Cycles: Off → 15m → 30m → 60m → 90m → Off */
   const handleSleepTimerClick = () => {
     const options = [0, 15, 30, 60, 90];
     const currentIndex = options.indexOf(state.sleepTimerDuration);
@@ -88,6 +102,8 @@ export const Player: React.FC<PlayerProps> = ({ onClose }) => {
     setSleepTimer(nextDuration);
   };
 
+  /* ───── Repeat Mode Cycle ─────
+     Cycles: none → all → 2x → 3x → none */
   const handleRepeatClick = () => {
     const modes: RepeatMode[] = ['none', 'all', 'two', 'three'];
     const currentIndex = modes.indexOf(state.repeatMode);
@@ -104,9 +120,11 @@ export const Player: React.FC<PlayerProps> = ({ onClose }) => {
   };
 
   return (
-    <div className="fixed inset-0 h-[100dvh] bg-[#0a0502] text-white overflow-hidden flex flex-col">
-      {/* Background Artwork Cover */}
-      <div className="fixed inset-0 -z-0 overflow-hidden pointer-events-none">
+    <div id="player" data-component="player" className="fixed inset-0 h-[100dvh] bg-[#0a0502] text-white overflow-hidden flex flex-col">
+
+      {/* ───── Background Artwork ─────
+           Blurred, full-bleed album art behind all player content. */}
+      <div id="player-bg-artwork" data-component="player-bg-artwork" className="fixed inset-0 -z-0 overflow-hidden pointer-events-none">
         <motion.img 
           key={`bg-${currentTrack.id}`}
           src={currentTrack.artwork}
@@ -119,9 +137,11 @@ export const Player: React.FC<PlayerProps> = ({ onClose }) => {
         <div className="absolute inset-0 bg-black/10" />
       </div>
 
-      {/* Header */}
-      <header className="relative z-10 p-6 flex justify-between items-center">
+      {/* ───── Player Header ─────
+           Close button, "Playing from" label, and playlist toggle. */}
+      <header id="player-header" data-component="player-header" className="relative z-10 p-6 flex justify-between items-center">
         <button 
+          id="player-close-btn"
           onClick={onClose}
           className="p-2 hover:bg-white/10 rounded-full transition-colors border border-white/20 mix-blend-difference"
         >
@@ -132,6 +152,7 @@ export const Player: React.FC<PlayerProps> = ({ onClose }) => {
           <p className="text-sm font-medium">Realigna Favorites</p>
         </div>
         <button 
+          id="player-playlist-toggle-btn"
           onClick={() => setShowPlaylist(!showPlaylist)}
           className="p-2 hover:bg-white/10 rounded-full transition-colors border border-white/20 mix-blend-difference"
         >
@@ -139,13 +160,15 @@ export const Player: React.FC<PlayerProps> = ({ onClose }) => {
         </button>
       </header>
 
-      {/* Main Content */}
-      <main className="relative z-10 flex-1 flex flex-col items-center justify-end px-8 pb-40">
-        {/* Spacer for artwork area */}
+      {/* ───── Main Content Area ─────
+           Flex column pushing track info and controls toward the bottom. */}
+      <main id="player-main" data-component="player-main" className="relative z-10 flex-1 flex flex-col items-center justify-end px-8 pb-40">
+        {/* Spacer – pushes content down so artwork fills the top */}
         <div className="flex-1" />
 
-        {/* Track Info */}
-        <div className="w-full text-center mb-8 flex flex-col items-center">
+        {/* ───── Track Info ─────
+             Animated title and artist name below the artwork area. */}
+        <div id="player-track-info" data-component="player-track-info" className="w-full text-center mb-8 flex flex-col items-center">
           <motion.h1 
             key={`title-${currentTrack.id}`}
             initial={{ y: 10, opacity: 0 }}
@@ -165,11 +188,16 @@ export const Player: React.FC<PlayerProps> = ({ onClose }) => {
           </motion.p>
         </div>
 
-        <div id="controls-wrap" className="absolute bottom-0 left-0 right-0 px-4 flex flex-col items-center">
-          {/* Row 1: Timer, Progress, Volume */}
-          <div className="w-full flex items-center gap-2 mb-0 mix-blend-difference">
-            {/* Sleep Timer Button */}
+        {/* ───── Controls Wrapper ─────
+             Pinned to the bottom of the main area. Contains two rows. */}
+        <div id="player-controls" data-component="player-controls" className="absolute bottom-0 left-0 right-0 px-4 flex flex-col items-center">
+
+          {/* ── Row 1: Timer · Progress Bar · Volume ── */}
+          <div id="player-row-progress" data-component="player-row-progress" className="w-full flex items-center gap-2 mb-0 mix-blend-difference">
+
+            {/* ── Sleep Timer Button ── */}
             <button 
+              id="player-sleep-timer-btn"
               onClick={handleSleepTimerClick}
               className={cn(
                 "relative p-2.5 rounded-full transition-all duration-300 border border-white/20",
@@ -193,8 +221,8 @@ export const Player: React.FC<PlayerProps> = ({ onClose }) => {
               </div>
             </button>
 
-            {/* Progress Bar */}
-            <div className="flex-1 mx-4">
+            {/* ── Progress Bar ── */}
+            <div id="player-progress-bar" data-component="player-progress-bar" className="flex-1 mx-4">
               <div className="relative h-1 w-full bg-white/20 rounded-full overflow-hidden cursor-pointer group border border-white/10">
                 <div 
                   className="absolute inset-0 bg-white/20 w-full" 
@@ -215,8 +243,8 @@ export const Player: React.FC<PlayerProps> = ({ onClose }) => {
               </div>
             </div>
 
-            {/* Volume Trigger Button */}
-            <div className="relative flex items-center gap-2">
+            {/* ── Volume Control ── */}
+            <div id="player-volume-control" data-component="player-volume-control" className="relative flex items-center gap-2">
               <AnimatePresence>
                 {showVolumePill && (
                   <motion.div 
@@ -225,7 +253,8 @@ export const Player: React.FC<PlayerProps> = ({ onClose }) => {
                     exit={{ y: 10, opacity: 0 }}
                     className="absolute bottom-full left-1/2 -translate-x-1/2 mb-6 z-50"
                   >
-                    <div className="relative w-12 h-40 bg-white/10 backdrop-blur-2xl rounded-[22px] overflow-hidden border border-white/10 shadow-2xl">
+                    {/* ── Vertical Volume Slider Pill ── */}
+                    <div id="player-volume-pill" className="relative w-12 h-40 bg-white/10 backdrop-blur-2xl rounded-[22px] overflow-hidden border border-white/10 shadow-2xl">
                       <input 
                         type="range" 
                         min="0" 
@@ -248,23 +277,8 @@ export const Player: React.FC<PlayerProps> = ({ onClose }) => {
                 )}
               </AnimatePresence>
 
-              {/* Real-time Volume Meter */}
-              <div className="flex items-end gap-[2px] h-4 px-1">
-                {[...Array(5)].map((_, i) => (
-                  <motion.div
-                    key={i}
-                    initial={false}
-                    animate={{ 
-                      height: `${(i + 1) * 20}%`,
-                      opacity: state.volume >= (i + 1) / 5 ? 1 : 0.2,
-                      backgroundColor: state.volume >= (i + 1) / 5 ? 'white' : 'rgba(255,255,255,0.2)'
-                    }}
-                    className="w-[3px] rounded-full"
-                  />
-                ))}
-              </div>
-
               <button 
+                id="player-volume-btn"
                 onClick={handleVolumeButtonClick}
                 className={cn(
                   "relative p-2.5 rounded-full transition-all duration-300 border border-white/20",
@@ -276,10 +290,12 @@ export const Player: React.FC<PlayerProps> = ({ onClose }) => {
             </div>
           </div>
 
-          {/* Row 2: Loop, Prev, Play/Pause, Next, Favorite */}
-          <div className="w-full flex justify-center items-center px-2 mix-blend-difference max-w-sm gap-3">
-            {/* Repeat Button */}
+          {/* ── Row 2: Repeat · Skip Back · Play/Pause · Skip Forward · Favorite ── */}
+          <div id="player-row-transport" data-component="player-row-transport" className="w-full flex justify-center items-center px-2 mix-blend-difference max-w-sm gap-3">
+
+            {/* ── Repeat Button ── */}
             <button 
+              id="player-repeat-btn"
               onClick={handleRepeatClick}
               className={cn(
                 "relative p-2.5 rounded-full transition-all duration-300 border border-white/20",
@@ -297,29 +313,36 @@ export const Player: React.FC<PlayerProps> = ({ onClose }) => {
               </div>
             </button>
 
+            {/* ── Previous Track ── */}
             <button 
+              id="player-prev-btn"
               onClick={previous}
               className="p-2.5 text-white/80 hover:text-white transition-colors border border-white/20 rounded-full"
             >
               <SkipBack size={20} fill="currentColor" />
             </button>
             
+            {/* ── Play / Pause ── */}
             <button 
+              id="player-play-pause-btn"
               onClick={toggle}
               className="w-16 h-16 aspect-square bg-white text-black rounded-full flex items-center justify-center hover:scale-105 active:scale-95 transition-all duration-300 shadow-xl border border-white/20"
             >
               {state.isPlaying ? <Pause size={24} fill="currentColor" /> : <Play size={24} fill="currentColor" className="ml-1" />}
             </button>
 
+            {/* ── Next Track ── */}
             <button 
+              id="player-next-btn"
               onClick={next}
               className="p-2.5 text-white/80 hover:text-white transition-colors border border-white/20 rounded-full"
             >
               <SkipForward size={20} fill="currentColor" />
             </button>
 
-            {/* Favorite Button */}
+            {/* ── Favorite Button ── */}
             <button 
+              id="player-favorite-btn"
               onClick={toggleFavorite}
               className={cn(
                 "p-2.5 rounded-full transition-all duration-300 border border-white/20",
@@ -332,32 +355,41 @@ export const Player: React.FC<PlayerProps> = ({ onClose }) => {
         </div>
       </main>
 
-      {/* Footer / Empty for spacing */}
-      <footer className={cn("relative z-10 p-6 pt-0 h-0", state.isPlaying && "hidden")} />
+      {/* ───── Footer Spacer ─────
+           Collapses when playing to maximise artwork visibility. */}
+      <footer id="player-footer-spacer" className="relative z-10 p-6 pt-0 h-0" />
 
-      {/* Playlist Overlay */}
+      {/* ───── Playlist Overlay ("Up Next") ─────
+           Slides up from bottom with spring physics, lists all queued tracks. */}
       <AnimatePresence>
         {showPlaylist && (
           <motion.div 
+            id="player-playlist-overlay"
+            data-component="player-playlist-overlay"
             initial={{ y: '100%' }}
             animate={{ y: 0 }}
             exit={{ y: '100%' }}
             transition={{ type: 'spring', damping: 25, stiffness: 200 }}
             className="absolute inset-0 z-50 bg-[#0a0502]/95 backdrop-blur-2xl p-6 flex flex-col"
           >
-            <div className="flex justify-between items-center mb-8">
+            {/* ── Playlist Header ── */}
+            <div id="player-playlist-header" className="flex justify-between items-center mb-8">
               <h2 className="text-2xl font-bold">Up Next</h2>
               <button 
+                id="player-playlist-close-btn"
                 onClick={() => setShowPlaylist(false)}
                 className="p-2 hover:bg-white/10 rounded-full"
               >
                 <ChevronDown size={24} />
               </button>
             </div>
-            <div className="flex-1 overflow-y-auto space-y-4 pr-2 custom-scrollbar">
+
+            {/* ── Playlist Track List ── */}
+            <div id="player-playlist-tracks" data-component="player-playlist-tracks" className="flex-1 overflow-y-auto space-y-4 pr-2 custom-scrollbar">
               {playlist.map((track, index) => (
                 <button 
                   key={track.id}
+                  data-track-id={track.id}
                   onClick={() => {
                     setTrackIndex(index);
                     setShowPlaylist(false);
@@ -379,6 +411,7 @@ export const Player: React.FC<PlayerProps> = ({ onClose }) => {
                     </p>
                     <p className="text-xs text-white/40">{track.artist}</p>
                   </div>
+                  {/* ── Animated Equalizer Bars ── */}
                   {index === state.currentTrackIndex && state.isPlaying && (
                     <div className="flex gap-1 items-end h-4">
                       <motion.div animate={{ height: [4, 12, 4] }} transition={{ repeat: Infinity, duration: 0.5 }} className="w-1 bg-white" />

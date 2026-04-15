@@ -1,9 +1,18 @@
+/**
+ * NightlyRealignments – Sleep Meditation Builder (Dark Theme)
+ * Three-view flow: Landing → Category Selection → Playlist Playback.
+ * Users pick one track per category, then play them as a nightly sequence.
+ * Background is a blurred water photo with dark overlay.
+ */
+
 import React from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { ArrowLeft, ArrowRight, Info, Plus, Check, X, Play } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { LogoRingsUnified } from '@/components/brand/Logo';
 import { useAudio } from '../../AudioContext';
+
+const bg = "dark";
 
 interface NightlyCategory {
   id: string;
@@ -21,6 +30,7 @@ interface NightlyTrack {
   url: string;
 }
 
+/* ───── Category & Track Data ───── */
 const NIGHTLY_DATA: NightlyCategory[] = [
   {
     id: 'core',
@@ -87,6 +97,8 @@ export function NightlyRealignments({ onBack }: { onBack: () => void }) {
     });
   };
 
+  /* ───── Start Playlist ─────
+     Builds a Track[] from selected tracks, loads into AudioContext, and auto-plays. */
   const startPlaylist = () => {
     const tracks = (Object.values(selectedTracks) as NightlyTrack[]).map(t => ({
       id: t.id,
@@ -100,7 +112,6 @@ export function NightlyRealignments({ onBack }: { onBack: () => void }) {
       setPlaylist(tracks);
       setTrackIndex(0);
       setView('playlist');
-      // Auto-play
       if (!state.isPlaying) {
         setTimeout(() => toggle(), 100);
       }
@@ -108,12 +119,15 @@ export function NightlyRealignments({ onBack }: { onBack: () => void }) {
   };
 
   return (
-    <div className="relative min-h-screen bg-cover bg-center bg-no-repeat" style={{ backgroundImage: 'url(https://picsum.photos/seed/water/1080/1920?blur=10)' }}>
+    <div id="nightly-page" data-component="nightly-page" className="relative min-h-screen bg-cover bg-center bg-no-repeat" style={{ backgroundImage: 'url(https://picsum.photos/seed/water/1080/1920?blur=10)' }}>
+      {/* ── Background Overlay ── */}
       <div className="absolute inset-0 bg-[#0a1a2a]/40 backdrop-blur-sm" />
       
       <div className="relative z-10 p-6 flex flex-col h-screen overflow-hidden">
-        {/* Header */}
-        <header className="flex items-center justify-between mb-6">
+
+        {/* ───── Header ─────
+             Logo, dynamic title/subtitle, and back/close button. */}
+        <header id="nightly-header" data-component="nightly-header" className="flex items-center justify-between mb-6">
           <div className="flex items-center gap-3">
             <div className="size-12 bg-white rounded-full flex items-center justify-center shadow-lg">
               <LogoRingsUnified variation="default" size={32} />
@@ -128,6 +142,7 @@ export function NightlyRealignments({ onBack }: { onBack: () => void }) {
             </div>
           </div>
           <button 
+            id="nightly-back-btn"
             onClick={() => {
               if (view === 'playlist') setView('landing');
               else if (view === 'selecting') setView('landing');
@@ -139,9 +154,10 @@ export function NightlyRealignments({ onBack }: { onBack: () => void }) {
           </button>
         </header>
 
-        {/* Hero Section */}
+        {/* ───── Hero / Instructor Card ─────
+             Selection instructions with Daleen's photo. Hidden during playlist view. */}
         {view !== 'playlist' && (
-          <div className="bg-white/80 backdrop-blur-md rounded-[32px] p-4 flex items-center gap-4 mb-8 shadow-xl border border-white/40">
+          <div id="nightly-hero" data-component="nightly-hero" className="bg-white/80 backdrop-blur-md rounded-[32px] p-4 flex items-center gap-4 mb-8 shadow-xl border border-white/40">
             <img 
               src="https://picsum.photos/seed/daleen2/200/200" 
               alt="Daleen" 
@@ -156,9 +172,13 @@ export function NightlyRealignments({ onBack }: { onBack: () => void }) {
           </div>
         )}
 
-        {/* Views */}
-        <div className="flex-1 overflow-y-auto custom-scrollbar pb-32">
+        {/* ───── View Router ─────
+             Animated switch between the three views: landing, selecting, playlist. */}
+        <div id="nightly-content" data-component="nightly-content" className="flex-1 overflow-y-auto custom-scrollbar pb-32">
           <AnimatePresence mode="wait">
+
+            {/* ── View: Landing ──
+                 Category cards + "View Playlist" CTA */}
             {view === 'landing' && (
               <motion.div 
                 key="landing"
@@ -170,6 +190,7 @@ export function NightlyRealignments({ onBack }: { onBack: () => void }) {
                 {NIGHTLY_DATA.map((cat, idx) => (
                   <button
                     key={cat.id}
+                    data-category-id={cat.id}
                     onClick={() => {
                       setCurrentCatIndex(idx);
                       setView('selecting');
@@ -185,8 +206,10 @@ export function NightlyRealignments({ onBack }: { onBack: () => void }) {
                   </button>
                 ))}
                 
+                {/* ── View Playlist CTA ── */}
                 <div className="pt-8 flex justify-center">
                   <button 
+                    id="nightly-view-playlist-btn"
                     onClick={startPlaylist}
                     disabled={Object.keys(selectedTracks).length === 0}
                     className="bg-[#f45d6e] text-white font-bold py-4 px-12 rounded-full shadow-lg active:scale-95 transition-all disabled:opacity-50 disabled:scale-100 uppercase tracking-widest"
@@ -197,6 +220,8 @@ export function NightlyRealignments({ onBack }: { onBack: () => void }) {
               </motion.div>
             )}
 
+            {/* ── View: Selecting ──
+                 Track picker for the current category with info + toggle buttons */}
             {view === 'selecting' && (
               <motion.div 
                 key="selecting"
@@ -205,7 +230,9 @@ export function NightlyRealignments({ onBack }: { onBack: () => void }) {
                 exit={{ opacity: 0, x: -20 }}
                 className="space-y-4"
               >
+                {/* ── Next Category Button ── */}
                 <button 
+                  id="nightly-next-category-btn"
                   onClick={() => {
                     if (currentCatIndex < NIGHTLY_DATA.length - 1) {
                       setCurrentCatIndex(prev => prev + 1);
@@ -218,11 +245,13 @@ export function NightlyRealignments({ onBack }: { onBack: () => void }) {
                   Next <ArrowRight size={20} />
                 </button>
 
+                {/* ── Track Cards ── */}
                 {currentCategory.tracks.map((track) => {
                   const isSelected = selectedTracks[currentCategory.id]?.id === track.id;
                   return (
                     <div
                       key={track.id}
+                      data-track-id={track.id}
                       className="w-full bg-[#1a3a5a]/60 backdrop-blur-md rounded-2xl p-4 flex items-center justify-between shadow-lg border border-white/10"
                     >
                       <span className="text-white font-medium ml-4">{track.title}</span>
@@ -249,6 +278,8 @@ export function NightlyRealignments({ onBack }: { onBack: () => void }) {
               </motion.div>
             )}
 
+            {/* ── View: Playlist ──
+                 Shows the selected tracks as a playable queue with hero artwork. */}
             {view === 'playlist' && (
               <motion.div 
                 key="playlist"
@@ -256,14 +287,17 @@ export function NightlyRealignments({ onBack }: { onBack: () => void }) {
                 animate={{ opacity: 1 }}
                 className="space-y-6"
               >
-                <div className="w-full aspect-[16/7] rounded-3xl overflow-hidden shadow-2xl border-2 border-white/20">
+                {/* ── Playlist Hero Image ── */}
+                <div id="nightly-playlist-hero" className="w-full aspect-[16/7] rounded-3xl overflow-hidden shadow-2xl border-2 border-white/20">
                   <img src="https://picsum.photos/seed/sleep2/800/450" alt="Sleep" className="w-full h-full object-cover" />
                 </div>
 
-                <div className="space-y-3">
+                {/* ── Playlist Track Items ── */}
+                <div id="nightly-playlist-tracks" data-component="nightly-playlist-tracks" className="space-y-3">
                   {(Object.values(selectedTracks) as NightlyTrack[]).map((track, idx) => (
                     <div 
                       key={track.id}
+                      data-track-id={track.id}
                       className={cn(
                         "w-full rounded-2xl p-4 flex items-center justify-between shadow-lg border transition-all",
                         state.currentTrackIndex === idx ? "bg-[#f45d6e] border-white/20" : "bg-[#1a3a5a]/60 border-white/10"
@@ -275,16 +309,19 @@ export function NightlyRealignments({ onBack }: { onBack: () => void }) {
                       </span>
                     </div>
                   ))}
+                </div>
               </motion.div>
             )}
           </AnimatePresence>
         </div>
       </div>
 
-      {/* Info Modal */}
+      {/* ───── Track Info Modal ─────
+           Centered overlay with track description and close button. */}
       <AnimatePresence>
         {infoTrack && (
-          <div className="fixed inset-0 z-[100] flex items-center justify-center p-6">
+          <div id="nightly-info-modal" data-component="nightly-info-modal" className="fixed inset-0 z-[100] flex items-center justify-center p-6">
+            {/* ── Backdrop ── */}
             <motion.div 
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
@@ -292,6 +329,7 @@ export function NightlyRealignments({ onBack }: { onBack: () => void }) {
               onClick={() => setInfoTrack(null)}
               className="absolute inset-0 bg-black/60 backdrop-blur-sm"
             />
+            {/* ── Modal Card ── */}
             <motion.div 
               initial={{ scale: 0.9, opacity: 0, y: 20 }}
               animate={{ scale: 1, opacity: 1, y: 0 }}
@@ -299,6 +337,7 @@ export function NightlyRealignments({ onBack }: { onBack: () => void }) {
               className="relative w-full max-w-sm bg-[#a55664] rounded-[40px] p-8 text-white shadow-2xl border border-white/20"
             >
               <button 
+                id="nightly-info-close-btn"
                 onClick={() => setInfoTrack(null)}
                 className="absolute -top-4 -right-4 size-12 bg-white text-[#a55664] rounded-full flex items-center justify-center shadow-xl border-4 border-[#a55664]"
               >

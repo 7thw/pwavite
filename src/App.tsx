@@ -3,10 +3,15 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+/**
+ * App – Root Application Shell
+ * Orchestrates top-level routing, splash screen, player drawer,
+ * and the persistent bottom bar (MiniPlayer + Footer).
+ */
+
 import React from 'react';
 import { AudioProvider } from './AudioContext';
 import { Player } from './components/player/Player';
-import { MiniPlayer } from './components/player/MiniPlayer';
 import { PlaylistsPage } from './components/pages/PlaylistsPage';
 import { MeditationLibrary } from './components/pages/MeditationLibrary';
 import { NightlyRealignments } from './components/pages/NightlyRealignments';
@@ -29,9 +34,12 @@ export default function App() {
 
   return (
     <AudioProvider>
-      <div className="relative min-h-screen bg-[#0a0502]">
+      {/* App Shell – Dark base background wrapping the entire viewport */}
+      <div id="app-shell" data-component="app-shell" className="relative min-h-screen bg-[#0a0502]">
         <AnimatePresence mode="wait">
           {showSplash ? (
+            /* ───── Splash Screen ─────
+               Animated brand intro shown once on first load. */
             <SplashAnimation 
               key="splash"
               onComplete={() => setShowSplash(false)} 
@@ -44,6 +52,8 @@ export default function App() {
               animate={{ opacity: 1 }}
               className="relative min-h-screen"
             >
+              {/* ───── Page Router ─────
+                   Animated page transitions between the four content pages. */}
               <AnimatePresence mode="wait">
                 {currentPage === 'playlists' ? (
                   <motion.div
@@ -89,7 +99,9 @@ export default function App() {
                 )}
               </AnimatePresence>
 
-              {/* Player Drawer */}
+              {/* ───── Player Drawer ─────
+                   Full-screen audio player opened via MiniPlayer tap.
+                   Uses Vaul Drawer for swipe-to-dismiss gesture support. */}
               <Drawer open={isPlayerOpen} onOpenChange={setIsPlayerOpen} handleOnly>
                 <DrawerContent className="!max-h-none h-[100dvh] rounded-none border-none bg-transparent p-0 overflow-hidden">
                   <DrawerHeader className="sr-only">
@@ -100,14 +112,18 @@ export default function App() {
                 </DrawerContent>
               </Drawer>
 
-              {/* Bottom Bar: MiniPlayer + Footer */}
+              {/* ───── Bottom Bar ─────
+                   Fixed-position overlay containing the unified Footer
+                   (Nav + MiniPlayer tabs). Hidden when the Player drawer is open. */}
               {!isPlayerOpen && (
-                <div className="fixed bottom-0 left-0 right-0 z-40 px-6 pb-8 pt-4 pointer-events-none">
-                  <div className="max-w-md mx-auto flex flex-col gap-3 pointer-events-auto">
-                    <AnimatePresence>
-                      <MiniPlayer onOpenPlayer={() => setIsPlayerOpen(true)} />
-                    </AnimatePresence>
-                    <Footer tone="light" />
+                <div id="bottom-bar" data-component="bottom-bar" className="fixed bottom-0 left-0 right-0 z-40 px-6 pb-8 pt-4 pointer-events-none">
+                  <div className="max-w-md mx-auto pointer-events-auto">
+                    <Footer
+                      theme={currentPage === 'nightly' || currentPage === 'master' ? 'light' : 'dark'}
+                      onOpenPlayer={() => setIsPlayerOpen(true)}
+                      onNavigate={(page) => setCurrentPage(page)}
+                      currentPage={currentPage}
+                    />
                   </div>
                 </div>
               )}

@@ -1,3 +1,10 @@
+/**
+ * MasterYourEnergy – Premium Content Page (Dark Theme)
+ * Two-view flow: Paywall → Track Selection.
+ * Paywall shows branding, pricing, and coupon entry.
+ * Selection view has a sunset background with track cards.
+ */
+
 import React from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { ArrowLeft, Play, ChevronRight } from 'lucide-react';
@@ -12,6 +19,7 @@ interface MasterTrack {
   url: string;
 }
 
+/* ───── Track Data ───── */
 const MASTER_TRACKS: MasterTrack[] = [
   {
     id: 'health',
@@ -42,28 +50,34 @@ export function MasterYourEnergy({ onBack }: { onBack: () => void }) {
     }));
     setPlaylist(allTracks);
     setTrackIndex(index);
-    // Auto-play if not already playing
     if (!state.isPlaying) {
       setTimeout(() => toggle(), 100);
     }
   };
 
   return (
-    <div className="relative min-h-screen bg-white overflow-hidden">
+    <div id="master-page" data-component="master-page" className="relative min-h-screen bg-white overflow-hidden">
       <AnimatePresence mode="wait">
+
+        {/* ───── View: Paywall ─────
+             Brand hero, pricing buttons, and coupon entry. */}
         {view === 'paywall' ? (
           <motion.div 
             key="paywall"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
+            id="master-paywall"
+            data-component="master-paywall"
             className="relative z-10 flex flex-col items-center px-8 pt-20 pb-12 h-screen"
           >
+            {/* ── Brand Logo ── */}
             <div className="mb-8">
               <LogoRingsUnified variation="default" size={120} />
             </div>
             
-            <div className="text-center mb-12">
+            {/* ── Brand Copy ── */}
+            <div id="master-paywall-copy" className="text-center mb-12">
               <h1 className="text-4xl font-light text-[#1a3a5a] tracking-widest mb-2">
                 re<span className="font-bold">ΛLIGNA</span>
               </h1>
@@ -72,6 +86,7 @@ export function MasterYourEnergy({ onBack }: { onBack: () => void }) {
               <p className="text-base text-[#1a3a5a]/60">Inspired by Archangels</p>
             </div>
 
+            {/* ── Instructor Photo ── */}
             <div className="mb-12">
               <img 
                 src="https://picsum.photos/seed/daleen3/300/300" 
@@ -80,19 +95,25 @@ export function MasterYourEnergy({ onBack }: { onBack: () => void }) {
               />
             </div>
 
-            <div className="w-full space-y-4 max-w-sm">
+            {/* ── Paywall Actions ── */}
+            <div id="master-paywall-actions" data-component="master-paywall-actions" className="w-full space-y-4 max-w-sm">
               <button 
+                id="master-upgrade-btn"
                 onClick={() => setView('selection')}
                 className="w-full bg-[#0f2a3d] text-white py-5 px-6 rounded-[24px] font-bold text-sm leading-tight shadow-xl active:scale-95 transition-transform"
               >
                 Upgrade to the paid version to access this section - $49 plus $20
               </button>
               
-              <button className="w-full bg-[#0f2a3d] text-white py-5 px-6 rounded-[24px] font-bold text-sm leading-tight shadow-xl active:scale-95 transition-transform">
+              <button 
+                id="master-coupon-btn"
+                className="w-full bg-[#0f2a3d] text-white py-5 px-6 rounded-[24px] font-bold text-sm leading-tight shadow-xl active:scale-95 transition-transform"
+              >
                 Enter COUPON
               </button>
 
               <button 
+                id="master-goback-btn"
                 onClick={onBack}
                 className="w-full py-4 text-[#1a3a5a]/40 font-bold uppercase tracking-widest text-xs"
               >
@@ -101,19 +122,26 @@ export function MasterYourEnergy({ onBack }: { onBack: () => void }) {
             </div>
           </motion.div>
         ) : (
+
+          /* ───── View: Selection ─────
+               Track list on a sunset background with descriptive hero card. */
           <motion.div 
             key="content"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
+            id="master-selection"
+            data-component="master-selection"
             className="relative h-screen bg-cover bg-center bg-no-repeat"
             style={{ backgroundImage: 'url(https://picsum.photos/seed/sunset-beach/1080/1920)' }}
           >
+            {/* ── Background Overlay ── */}
             <div className="absolute inset-0 bg-black/20" />
             
             <div className="relative z-10 p-6 flex flex-col h-screen">
-              {/* Header */}
-              <header className="flex items-center justify-between mb-8">
+
+              {/* ── Header ── */}
+              <header id="master-selection-header" data-component="master-selection-header" className="flex items-center justify-between mb-8">
                 <div className="flex items-center gap-3">
                   <div className="size-12 bg-white rounded-full flex items-center justify-center shadow-lg">
                     <LogoRingsUnified variation="default" size={32} />
@@ -124,6 +152,7 @@ export function MasterYourEnergy({ onBack }: { onBack: () => void }) {
                   </div>
                 </div>
                 <button 
+                  id="master-selection-back-btn"
                   onClick={() => setView('paywall')}
                   className="size-10 bg-white/20 backdrop-blur-md text-white rounded-full flex items-center justify-center shadow-lg active:scale-90 transition-transform"
                 >
@@ -136,16 +165,19 @@ export function MasterYourEnergy({ onBack }: { onBack: () => void }) {
                 animate={{ opacity: 1, y: 0 }}
                 className="flex flex-col h-full"
               >
-                <div className="bg-white/60 backdrop-blur-md rounded-[32px] p-8 mb-12 shadow-xl border border-white/40">
+                {/* ── Description Card ── */}
+                <div id="master-description" data-component="master-description" className="bg-white/60 backdrop-blur-md rounded-[32px] p-8 mb-12 shadow-xl border border-white/40">
                   <p className="text-[#1a3a5a] text-lg font-bold text-center leading-relaxed">
                     Sleep & Meditate with reALIGNA and align your physical and energy being.
                   </p>
                 </div>
 
-                <div className="space-y-4">
+                {/* ── Track List ── */}
+                <div id="master-tracks" data-component="master-tracks" className="space-y-4">
                   {MASTER_TRACKS.map((track, index) => (
                     <button
                       key={track.id}
+                      data-track-id={track.id}
                       onClick={() => handlePlayTrack(track, index)}
                       className="w-full bg-[#1a3a5a]/80 backdrop-blur-md rounded-full p-2 flex items-center justify-between shadow-lg active:scale-[0.98] transition-transform group border border-white/10"
                     >

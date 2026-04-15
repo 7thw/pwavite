@@ -1,6 +1,15 @@
+/**
+ * AudioContext – Global Audio State Provider
+ * Manages the HTML5 Audio element, playback state, playlist queue,
+ * sleep timer countdown, repeat modes, and MediaSession API integration.
+ * Consumed by Player, MiniPlayer, and all page components via useAudio().
+ */
+
 import React, { createContext, useContext, useEffect, useRef, useState } from 'react';
 import { Track, AudioState, RepeatMode } from './types';
 
+/* ───── Context Shape ─────
+   All actions and state exposed to consumers. */
 interface AudioContextType {
   state: AudioState;
   playlist: Track[];
@@ -37,7 +46,9 @@ export const AudioProvider: React.FC<{ children: React.ReactNode; initialPlaylis
 
   const currentTrack = playlist[state.currentTrackIndex] || null;
 
-  // Sleep Timer Countdown
+  /* ───── Sleep Timer Countdown ─────
+     Ticks every second while playing. When remaining reaches 0,
+     fades out volume and pauses playback. */
   useEffect(() => {
     let interval: NodeJS.Timeout;
     if (state.sleepTimerRemaining > 0 && state.isPlaying) {
@@ -45,7 +56,6 @@ export const AudioProvider: React.FC<{ children: React.ReactNode; initialPlaylis
         setState(s => {
           const remaining = s.sleepTimerRemaining - 1;
           if (remaining <= 0) {
-            // Fade out and stop
             fadeOutAndStop();
             return { ...s, sleepTimerRemaining: 0, sleepTimerDuration: 0 };
           }
@@ -56,6 +66,8 @@ export const AudioProvider: React.FC<{ children: React.ReactNode; initialPlaylis
     return () => clearInterval(interval);
   }, [state.sleepTimerRemaining, state.isPlaying]);
 
+  /* ───── Fade Out Helper ─────
+     Gradually reduces volume to 0 before pausing, then restores volume. */
   const fadeOutAndStop = () => {
     if (!audioRef.current) return;
     const initialVolume = audioRef.current.volume;
@@ -72,6 +84,9 @@ export const AudioProvider: React.FC<{ children: React.ReactNode; initialPlaylis
     }, 100);
   };
 
+  /* ───── Audio Element Setup ─────
+     Creates the HTMLAudioElement once and wires up all event listeners
+     (timeupdate, durationchange, ended, play, pause, volumechange). */
   useEffect(() => {
     const audio = new Audio();
     audio.preload = 'metadata';
@@ -131,6 +146,8 @@ export const AudioProvider: React.FC<{ children: React.ReactNode; initialPlaylis
     };
   }, []);
 
+  /* ───── Track Ended Logic ─────
+     Handles auto-advance, repeat-all, and repeat-N modes. */
   const handleTrackEnded = () => {
     setState(s => {
       const isLastTrack = s.currentTrackIndex === playlist.length - 1;
@@ -153,6 +170,9 @@ export const AudioProvider: React.FC<{ children: React.ReactNode; initialPlaylis
     });
   };
 
+  /* ───── Track Source Loader ─────
+     Loads the audio src when currentTrackIndex changes,
+     resumes playback if it was already playing. */
   useEffect(() => {
     if (audioRef.current && currentTrack) {
       const wasPlaying = state.isPlaying;
@@ -165,6 +185,8 @@ export const AudioProvider: React.FC<{ children: React.ReactNode; initialPlaylis
     }
   }, [state.currentTrackIndex]);
 
+  /* ───── MediaSession API ─────
+     Syncs metadata + action handlers with the browser/OS media controls. */
   const updateMediaSession = () => {
     if ('mediaSession' in navigator && currentTrack) {
       navigator.mediaSession.metadata = new MediaMetadata({
@@ -193,6 +215,7 @@ export const AudioProvider: React.FC<{ children: React.ReactNode; initialPlaylis
     }
   };
 
+  /* ───── Playback Actions ───── */
   const play = () => audioRef.current?.play().catch(console.error);
   const pause = () => audioRef.current?.pause();
   const toggle = () => state.isPlaying ? pause() : play();
@@ -235,6 +258,8 @@ export const AudioProvider: React.FC<{ children: React.ReactNode; initialPlaylis
     }));
   };
 
+  /* ───── Sleep Timer Setter ─────
+     Converts user-selected minutes into seconds for the countdown. */
   const setSleepTimer = (duration: number) => {
     setState(s => ({
       ...s,
@@ -243,6 +268,8 @@ export const AudioProvider: React.FC<{ children: React.ReactNode; initialPlaylis
     }));
   };
 
+  /* ───── Repeat Mode Setter ─────
+     Cycles through none → all → 2x → 3x. Resets repeat count on change. */
   const setRepeatMode = (mode: RepeatMode) => {
     setState(s => ({
       ...s,
@@ -260,6 +287,8 @@ export const AudioProvider: React.FC<{ children: React.ReactNode; initialPlaylis
   );
 };
 
+/* ───── Consumer Hook ─────
+   Throws if used outside an AudioProvider boundary. */
 export const useAudio = () => {
   const context = useContext(AudioContext);
   if (!context) throw new Error('useAudio must be used within AudioProvider');

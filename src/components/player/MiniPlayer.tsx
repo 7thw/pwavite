@@ -1,3 +1,10 @@
+/**
+ * MiniPlayer – Compact Now-Playing Bar
+ * A slim, tappable strip shown in the bottom bar when audio is playing.
+ * Displays artwork, track title/artist, play/pause, and skip-forward controls.
+ * Tapping the body opens the full-screen Player drawer.
+ */
+
 import React from 'react';
 import { useAudio } from '../../AudioContext';
 import { Play, Pause, SkipForward } from 'lucide-react';
@@ -20,21 +27,30 @@ export const MiniPlayer = ({ onOpenPlayer }: MiniPlayerProps) => {
       exit={{ y: 20, opacity: 0 }}
       className="w-full"
     >
+      {/* ───── MiniPlayer Container ─────
+           Tappable card that opens the full Player drawer. */}
       <div 
+        id="mini-player" 
+        data-component="mini-player"
         onClick={onOpenPlayer}
         className="bg-white/10 backdrop-blur-2xl border border-white/10 rounded-[28px] p-3 flex items-center gap-4 shadow-2xl cursor-pointer group"
       >
+        {/* ───── Track Artwork ───── */}
         <img 
           src={currentTrack.artwork} 
           alt={currentTrack.title} 
           className="size-12 rounded-2xl object-cover shadow-lg group-hover:scale-105 transition-transform duration-300"
           referrerPolicy="no-referrer"
         />
-        <div className="flex-1 min-w-0">
+
+        {/* ───── Track Info ───── */}
+        <div id="mini-player-track-info" className="flex-1 min-w-0">
           <p className="font-bold text-sm truncate">{currentTrack.title}</p>
           <p className="text-xs text-white/40 truncate">{currentTrack.artist}</p>
         </div>
-        <div className="flex items-center gap-2 pr-2">
+
+        {/* ───── Playback Controls ───── */}
+        <div id="mini-player-controls" className="flex items-center gap-2 pr-2">
           <button 
             onClick={(e) => {
               e.stopPropagation();

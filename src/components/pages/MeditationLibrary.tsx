@@ -1,3 +1,10 @@
+/**
+ * MeditationLibrary – Daily Meditations Page (Light Theme)
+ * Two-level navigation: category list → track list.
+ * Background is a blurred beach photo with white overlay.
+ * Selecting a track loads the full category into AudioContext and auto-plays.
+ */
+
 import React from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { ArrowLeft, Play } from 'lucide-react';
@@ -21,6 +28,7 @@ interface MeditationTrack {
   duration: string;
 }
 
+/* ───── Category Data ───── */
 const CATEGORIES: MeditationCategory[] = [
   { id: 'heal-past', title: 'Heal The Past', subtitle: 'Meditations', archangel: 'jeremiel' },
   { id: 'stay-present', title: 'Stay In The Present', subtitle: 'Meditations', archangel: 'haniel' },
@@ -29,6 +37,7 @@ const CATEGORIES: MeditationCategory[] = [
   { id: 'full-moon', title: 'Full Moon', subtitle: 'Meditations', archangel: 'haniel' },
 ];
 
+/* ───── Track Data (keyed by category id) ───── */
 const TRACKS: Record<string, MeditationTrack[]> = {
   'heal-past': [
     { id: 'hp1', title: 'Explore your Core', artist: 'Daleen', artwork: 'https://picsum.photos/seed/med1/800/450', url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3', duration: '00:39' }
@@ -63,7 +72,6 @@ export function MeditationLibrary({ onBack }: { onBack: () => void }) {
   const { state, toggle, setPlaylist, setTrackIndex } = useAudio();
 
   const handlePlayTrack = (track: MeditationTrack, index: number) => {
-    // Load the full category playlist into AudioContext
     const categoryTracks = TRACKS[currentCategory!.id]?.map(t => ({
       id: t.id,
       title: t.title,
@@ -74,14 +82,14 @@ export function MeditationLibrary({ onBack }: { onBack: () => void }) {
     })) || [];
     setPlaylist(categoryTracks);
     setTrackIndex(index);
-    // Auto-play if not already playing
     if (!state.isPlaying) {
       setTimeout(() => toggle(), 100);
     }
   };
 
   return (
-    <div className="relative min-h-screen bg-cover bg-center bg-no-repeat" style={{ backgroundImage: 'url(https://picsum.photos/seed/beach/1080/1920?blur=10)' }}>
+    <div id="meditation-page" data-component="meditation-page" className="relative min-h-screen bg-cover bg-center bg-no-repeat" style={{ backgroundImage: 'url(https://picsum.photos/seed/beach/1080/1920?blur=10)' }}>
+      {/* ── Background Overlay ── */}
       <div className="absolute inset-0 bg-white/20 backdrop-blur-sm" />
       
       <motion.div 
@@ -89,8 +97,9 @@ export function MeditationLibrary({ onBack }: { onBack: () => void }) {
         animate={{ opacity: 1 }}
         className="relative z-10 p-6 flex flex-col h-screen overflow-hidden"
       >
-        {/* Header */}
-        <header className="flex items-center justify-between mb-8">
+        {/* ───── Header ─────
+             Logo, dynamic title, and back button. */}
+        <header id="meditation-header" data-component="meditation-header" className="flex items-center justify-between mb-8">
           <div className="flex items-center gap-3">
             <div className="size-12 bg-white rounded-full flex items-center justify-center shadow-lg">
               <LogoRingsUnified variation="default" size={32} />
@@ -103,6 +112,7 @@ export function MeditationLibrary({ onBack }: { onBack: () => void }) {
             </div>
           </div>
           <button 
+            id="meditation-back-btn"
             onClick={() => currentCategory ? setCurrentCategory(null) : onBack()}
             className="size-10 bg-[#f45d6e] text-white rounded-full flex items-center justify-center shadow-lg active:scale-90 transition-transform"
           >
@@ -110,8 +120,9 @@ export function MeditationLibrary({ onBack }: { onBack: () => void }) {
           </button>
         </header>
 
-        {/* Hero Section */}
-        <div className="bg-white/60 backdrop-blur-md rounded-[40px] p-4 flex items-center gap-4 mb-8 shadow-xl border border-white/40">
+        {/* ───── Hero / Instructor Card ─────
+             Daleen's photo and contextual instruction text. */}
+        <div id="meditation-hero" data-component="meditation-hero" className="bg-white/60 backdrop-blur-md rounded-[40px] p-4 flex items-center gap-4 mb-8 shadow-xl border border-white/40">
           <img 
             src="https://picsum.photos/seed/daleen/200/200" 
             alt="Daleen" 
@@ -125,10 +136,12 @@ export function MeditationLibrary({ onBack }: { onBack: () => void }) {
           </p>
         </div>
 
-        {/* Content Area */}
-        <div className="flex-1 overflow-y-auto custom-scrollbar pb-32">
+        {/* ───── Content Area ─────
+             Switches between category list and track list with slide animation. */}
+        <div id="meditation-content" data-component="meditation-content" className="flex-1 overflow-y-auto custom-scrollbar pb-32">
           <AnimatePresence mode="wait">
             {!currentCategory ? (
+              /* ── Category List ── */
               <motion.div 
                 key="categories"
                 initial={{ opacity: 0, x: -20 }}
@@ -139,6 +152,7 @@ export function MeditationLibrary({ onBack }: { onBack: () => void }) {
                 {CATEGORIES.map((cat) => (
                   <button
                     key={cat.id}
+                    data-category-id={cat.id}
                     onClick={() => setCurrentCategory(cat)}
                     className="w-full bg-white rounded-[32px] p-4 flex items-center justify-between shadow-lg active:scale-[0.98] transition-transform group"
                   >
@@ -152,6 +166,7 @@ export function MeditationLibrary({ onBack }: { onBack: () => void }) {
                 ))}
               </motion.div>
             ) : (
+              /* ── Track List ── */
               <motion.div 
                 key="tracks"
                 initial={{ opacity: 0, x: 20 }}
@@ -162,6 +177,7 @@ export function MeditationLibrary({ onBack }: { onBack: () => void }) {
                 {TRACKS[currentCategory.id]?.map((track, index) => (
                   <button
                     key={track.id}
+                    data-track-id={track.id}
                     onClick={() => handlePlayTrack(track, index)}
                     className="w-full bg-white rounded-[32px] p-4 flex items-center justify-between shadow-lg active:scale-[0.98] transition-transform group"
                   >
