@@ -142,8 +142,9 @@ export const Player: React.FC<PlayerProps> = ({ onClose }) => {
       <header id="player-header" data-component="player-header" className="relative z-10 p-6 flex justify-between items-center">
         <button 
           id="player-close-btn"
+          size="icon_lg"
           onClick={onClose}
-          className="p-2 hover:bg-white/10 rounded-full transition-colors border border-white/20 mix-blend-difference"
+          className="hover:bg-white/10 rounded-full transition-colors border border-white/20 mix-blend-difference"
         >
           <ChevronDown size={20} />
         </button>
@@ -154,9 +155,9 @@ export const Player: React.FC<PlayerProps> = ({ onClose }) => {
         <button 
           id="player-playlist-toggle-btn"
           onClick={() => setShowPlaylist(!showPlaylist)}
-          className="p-2 hover:bg-white/10 rounded-full transition-colors border border-white/20 mix-blend-difference"
+          className="p-3 hover:bg-white/10 rounded-full transition-colors border border-white/20 mix-blend-difference"
         >
-          <ListMusic size={20} />
+          <ListMusic size={16} />
         </button>
       </header>
 
@@ -200,12 +201,12 @@ export const Player: React.FC<PlayerProps> = ({ onClose }) => {
               id="player-sleep-timer-btn"
               onClick={handleSleepTimerClick}
               className={cn(
-                "relative p-2.5 rounded-full transition-all duration-300 border border-white/20",
+                "relative p-4 rounded-full transition-all duration-300 border border-white/20",
                 state.sleepTimerDuration > 0 ? "bg-white/40 text-white" : "text-white/40 hover:text-white"
               )}
             >
               <div className="relative flex items-center justify-center">
-                <TimerIcon animate={state.sleepTimerDuration > 0} className="size-4" />
+                <TimerIcon animate={state.sleepTimerDuration > 0} className="size-16 text-white!" />
                 <AnimatePresence>
                   {showDuration && state.sleepTimerDuration > 0 && (
                     <motion.span 
