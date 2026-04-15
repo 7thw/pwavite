@@ -2,7 +2,7 @@
 
 import * as React from "react";
 import { motion } from "motion/react";
-import { useAudioStore } from "@/lib/audio/audio-store";
+import { useAudio } from "@/AudioContext";
 
 import {
   useAnimateIconContext,
@@ -14,7 +14,8 @@ type MenuAudioProps = IconProps<string>;
 
 function IconComponent({ size, ...props }: MenuAudioProps) {
   const { active: isMenuOpen } = useAnimateIconContext();
-  const isPlaying = useAudioStore((s) => s.isPlaying);
+  const { state } = useAudio();
+  const isPlaying = state.isPlaying;
 
   return (
     <motion.svg

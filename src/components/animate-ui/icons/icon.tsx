@@ -505,6 +505,7 @@ function IconWrapper<T extends string>({
         inheritedAnimate) as Trigger;
 
       return (
+        // @ts-ignore — render prop type mismatch in generated animate-ui code (motion v12+)
         <AnimateIcon animate={finalAnimate} animateOnHover={animateOnHover} animateOnTap={animateOnTap} animateOnView={animateOnView} animateOnViewMargin={animateOnViewMargin} animateOnViewOnce={animateOnViewOnce} animation={animationProp ?? parentAnimation} loop={loop ?? parentLoop} loopDelay={loopDelay ?? parentLoopDelay} persistOnAnimateEnd={persistOnAnimateEnd ?? parentPersistOnAnimateEnd} initialOnAnimateEnd={initialOnAnimateEnd ?? parentInitialOnAnimateEnd} delay={delay ?? parentDelay} completeOnStop={completeOnStop ?? parentCompleteOnStop} render={<IconComponent size={size} className={cn(
                         className,
                         ((animationProp ?? parentAnimation) === 'path' ||
@@ -553,6 +554,7 @@ function IconWrapper<T extends string>({
     animationProp !== undefined
   ) {
     return (
+      // @ts-ignore — render prop type mismatch in generated animate-ui code (motion v12+)
       <AnimateIcon animate={animate} animateOnHover={animateOnHover} animateOnTap={animateOnTap} animateOnView={animateOnView} animateOnViewMargin={animateOnViewMargin} animateOnViewOnce={animateOnViewOnce} animation={animationProp} loop={loop} loopDelay={loopDelay} delay={delay} completeOnStop={completeOnStop} render={<IconComponent size={size} className={cn(
                     className,
                     (animationProp === 'path' || animationProp === 'path-loop') &&

@@ -142,9 +142,8 @@ export const Player: React.FC<PlayerProps> = ({ onClose }) => {
       <header id="player-header" data-component="player-header" className="relative z-10 p-6 flex justify-between items-center">
         <button 
           id="player-close-btn"
-          size="icon_lg"
           onClick={onClose}
-          className="hover:bg-white/10 rounded-full transition-colors border border-white/20 mix-blend-difference"
+          className="hover:bg-white/10 rounded-full transition-colors border border-white/20 mix-blend-difference p-3"
         >
           <ChevronDown size={20} />
         </button>
