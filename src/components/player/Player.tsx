@@ -155,7 +155,7 @@ export const Player: React.FC<PlayerProps> = ({ onClose }) => {
   };
 
   return (
-    <div id="player" data-component="player" className="fixed inset-0 h-[100dvh] bg-[#0a0502] text-white overflow-hidden flex flex-col">
+    <div id="player" data-component="player" className="fixed inset-0 h-[100dvh] bg-background text-white overflow-hidden flex flex-col">
 
       {/* ───── Background Artwork ─────
            Blurred, full-bleed album art behind all player content. */}
