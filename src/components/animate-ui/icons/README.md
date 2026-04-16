@@ -1,4 +1,4 @@
-# Animated-Ui Icons Get Started
+# Get Started
 URL: /docs/icons/get-started
 
 ***

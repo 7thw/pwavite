@@ -3,7 +3,105 @@
 @import "shadcn/tailwind.css";
 @import "@fontsource-variable/inter";
 
-@custom-variant dark (&:is(.isdark *));
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+  --font-heading: var(--font-sans);
+  --font-sans: 'Inter Variable', sans-serif;
+  --color-sidebar-ring: var(--sidebar-ring);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar: var(--sidebar);
+  --color-chart-5: var(--chart-5);
+  --color-chart-4: var(--chart-4);
+  --color-chart-3: var(--chart-3);
+  --color-chart-2: var(--chart-2);
+  --color-chart-1: var(--chart-1);
+  --color-ring: var(--ring);
+  --color-input: var(--input);
+  --color-border: var(--border);
+  --color-destructive: var(--destructive);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-accent: var(--accent);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-muted: var(--muted);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-secondary: var(--secondary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-primary: var(--primary);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-popover: var(--popover);
+  --color-card-foreground: var(--card-foreground);
+  --color-card: var(--card);
+  --color-foreground: var(--foreground);
+  --color-background: var(--background);
+  --radius-sm: calc(var(--radius) * 0.6);
+  --radius-md: calc(var(--radius) * 0.8);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) * 1.4);
+  --radius-2xl: calc(var(--radius) * 1.8);
+  --radius-3xl: calc(var(--radius) * 2.2);
+  --radius-4xl: calc(var(--radius) * 2.6);
+
+
+  --color-nightly: var(--color-nightly);
+  --color-daily: var(--color-daily);
+  --color-master: var(--color-master);
+  --color-insight: var(--color-insight);
+
+  --color-digit-eight: var(--color-digit-eight);
+  --color-digit-seven: var(--color-digit-seven);
+  --color-digit-six: var(--color-digit-six);
+  --color-digit-five: var(--color-digit-five);
+  --color-digit-four: var(--color-digit-four);
+  --color-digit-three: var(--color-digit-three);
+  --color-digit-two: var(--color-digit-two);
+  --color-digit-one: var(--color-digit-one);
+
+  --color-archangel-ariel-base: var(--color-archangel-ariel-base);
+  --color-archangel-ariel-overlay: var(--color-archangel-ariel-overlay);
+  --color-archangel-azrael-base: var(--color-archangel-azrael-base);
+  --color-archangel-azrael-overlay: var(--color-archangel-azrael-overlay);
+  --color-archangel-chamuel-base: var(--color-archangel-chamuel-base);
+  --color-archangel-chamuel-overlay: var(--color-archangel-chamuel-overlay);
+  --color-archangel-gabriel-base: var(--color-archangel-gabriel-base);
+  --color-archangel-gabriel-overlay: var(--color-archangel-gabriel-overlay);
+  --color-archangel-haniel-base: var(--color-archangel-haniel-base);
+  --color-archangel-haniel-overlay: var(--color-archangel-haniel-overlay);
+  --color-archangel-jeremiel-base: var(--color-archangel-jeremiel-base);
+  --color-archangel-jeremiel-overlay: var(--color-archangel-jeremiel-overlay);
+  --color-archangel-jophiel-base: var(--color-archangel-jophiel-base);
+  --color-archangel-jophiel-overlay: var(--color-archangel-jophiel-overlay);
+  --color-archangel-metatron-base: var(--color-archangel-metatron-base);
+  --color-archangel-metatron-overlay: var(--color-archangel-metatron-overlay);
+  --color-archangel-michael-base: var(--color-archangel-michael-base);
+  --color-archangel-michael-overlay: var(--color-archangel-michael-overlay);
+  --color-archangel-raphael-base: var(--color-archangel-raphael-base);
+  --color-archangel-raphael-overlay: var(--color-archangel-raphael-overlay);
+  --color-archangel-raquel-base: var(--color-archangel-raquel-base);
+  --color-archangel-raquel-overlay: var(--color-archangel-raquel-overlay);
+  --color-archangel-raziel-base: var(--color-archangel-raziel-base);
+  --color-archangel-raziel-ring-one: var(--color-archangel-raziel-ring-one);
+  --color-archangel-raziel-ring-two: var(--color-archangel-raziel-ring-two);
+  --color-archangel-raziel-ring-three: var(--color-archangel-raziel-ring-three);
+  --color-archangel-raziel-ring-four: var(--color-archangel-raziel-ring-four);
+  --color-archangel-raziel-ring-five: var(--color-archangel-raziel-ring-five);
+  --color-archangel-raziel-ring-six: var(--color-archangel-raziel-ring-six);
+  --color-archangel-raziel-ring-seven: var(--color-archangel-raziel-ring-seven);
+  --color-archangel-raziel-ring-eight: var(--color-archangel-raziel-ring-eight);
+  --color-archangel-raziel-overlay: var(--color-archangel-raziel-overlay);
+  --color-archangel-sandolphon-base: var(--color-archangel-sandolphon-base);
+  --color-archangel-sandolphon-overlay: var(--color-archangel-sandolphon-overlay);
+  --color-archangel-uriel-base: var(--color-archangel-uriel-base);
+  --color-archangel-uriel-overlay: var(--color-archangel-uriel-overlay);
+  --color-archangel-zadkiel-base: var(--color-archangel-zadkiel-base);
+  --color-archangel-zadkiel-overlay: var(--color-archangel-zadkiel-overlay);
+
+}
 
 :root {
   --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
@@ -82,10 +180,7 @@
   --sidebar-accent-foreground: oklch(0.205 0 0);
   --sidebar-border: oklch(0.922 0 0);
   --sidebar-ring: oklch(0.708 0 0);
-}
 
-.light {
-  color-scheme: light;
   --background: oklch(97.858% 0.01105 243.923);
   --background-darker: oklch(86.371% 0.03035 243.556);
   --foreground: oklch(29.2% 0.054116 245.9);
@@ -123,7 +218,6 @@
 }
 
 .dark {
-  color-scheme: dark;
   --background: oklch(29.2% 0.054116 245.9);
   --background-darker: oklch(22.378% 0.04011 246.307);
   --foreground: oklch(97.858% 0.01105 243.923);
@@ -159,167 +253,16 @@
   --sidebar-ring: oklch(0.704 0.04 256.788);
 }
 
-@theme {
-
-  --color-background: var(--background);
-  --color-background-alt: var(--background-alt);
-  --color-foreground: var(--foreground);
-  --color-foreground-alt: var(--foreground-alt);
-  --color-card: var(--card);
-  --color-card-foreground: var(--card-foreground);
-  --color-popover: var(--popover);
-  --color-popover-foreground: var(--popover-foreground);
-  --color-primary: var(--primary);
-  --color-primary-foreground: var(--primary-foreground);
-  --color-secondary: var(--secondary);
-  --color-secondary-foreground: var(--secondary-foreground);
-  --color-muted: var(--muted);
-  --color-muted-foreground: var(--muted-foreground);
-  --color-accent: var(--accent);
-  --color-accent-foreground: var(--accent-foreground);
-  --color-destructive: var(--destructive);
-  --color-destructive-foreground: var(--destructive-foreground);
-  --color-border: var(--border);
-  --color-input: var(--input);
-  --color-ring: var(--ring);
-
-  --color-nightly: var(--color-nightly);
-  --color-daily: var(--color-daily);
-  --color-master: var(--color-master);
-  --color-insight: var(--color-insight);
-
-  --color-digit-eight: var(--color-digit-eight);
-  --color-digit-seven: var(--color-digit-seven);
-  --color-digit-six: var(--color-digit-six);
-  --color-digit-five: var(--color-digit-five);
-  --color-digit-four: var(--color-digit-four);
-  --color-digit-three: var(--color-digit-three);
-  --color-digit-two: var(--color-digit-two);
-  --color-digit-one: var(--color-digit-one);
-
-  --color-archangel-ariel-base: var(--color-archangel-ariel-base);
-  --color-archangel-ariel-overlay: var(--color-archangel-ariel-overlay);
-  --color-archangel-azrael-base: var(--color-archangel-azrael-base);
-  --color-archangel-azrael-overlay: var(--color-archangel-azrael-overlay);
-  --color-archangel-chamuel-base: var(--color-archangel-chamuel-base);
-  --color-archangel-chamuel-overlay: var(--color-archangel-chamuel-overlay);
-  --color-archangel-gabriel-base: var(--color-archangel-gabriel-base);
-  --color-archangel-gabriel-overlay: var(--color-archangel-gabriel-overlay);
-  --color-archangel-haniel-base: var(--color-archangel-haniel-base);
-  --color-archangel-haniel-overlay: var(--color-archangel-haniel-overlay);
-  --color-archangel-jeremiel-base: var(--color-archangel-jeremiel-base);
-  --color-archangel-jeremiel-overlay: var(--color-archangel-jeremiel-overlay);
-  --color-archangel-jophiel-base: var(--color-archangel-jophiel-base);
-  --color-archangel-jophiel-overlay: var(--color-archangel-jophiel-overlay);
-  --color-archangel-metatron-base: var(--color-archangel-metatron-base);
-  --color-archangel-metatron-overlay: var(--color-archangel-metatron-overlay);
-  --color-archangel-michael-base: var(--color-archangel-michael-base);
-  --color-archangel-michael-overlay: var(--color-archangel-michael-overlay);
-  --color-archangel-raphael-base: var(--color-archangel-raphael-base);
-  --color-archangel-raphael-overlay: var(--color-archangel-raphael-overlay);
-  --color-archangel-raquel-base: var(--color-archangel-raquel-base);
-  --color-archangel-raquel-overlay: var(--color-archangel-raquel-overlay);
-  --color-archangel-raziel-base: var(--color-archangel-raziel-base);
-  --color-archangel-raziel-ring-one: var(--color-archangel-raziel-ring-one);
-  --color-archangel-raziel-ring-two: var(--color-archangel-raziel-ring-two);
-  --color-archangel-raziel-ring-three: var(--color-archangel-raziel-ring-three);
-  --color-archangel-raziel-ring-four: var(--color-archangel-raziel-ring-four);
-  --color-archangel-raziel-ring-five: var(--color-archangel-raziel-ring-five);
-  --color-archangel-raziel-ring-six: var(--color-archangel-raziel-ring-six);
-  --color-archangel-raziel-ring-seven: var(--color-archangel-raziel-ring-seven);
-  --color-archangel-raziel-ring-eight: var(--color-archangel-raziel-ring-eight);
-  --color-archangel-raziel-overlay: var(--color-archangel-raziel-overlay);
-  --color-archangel-sandolphon-base: var(--color-archangel-sandolphon-base);
-  --color-archangel-sandolphon-overlay: var(--color-archangel-sandolphon-overlay);
-  --color-archangel-uriel-base: var(--color-archangel-uriel-base);
-  --color-archangel-uriel-overlay: var(--color-archangel-uriel-overlay);
-  --color-archangel-zadkiel-base: var(--color-archangel-zadkiel-base);
-  --color-archangel-zadkiel-overlay: var(--color-archangel-zadkiel-overlay);
-
-}
-
 @layer base {
-
-  html,
-  body {
-    height: 100%;
-    overflow: hidden;
-    position: fixed;
-    width: 100%;
-  }
-
-  body {
-    background-color: #0a0502;
-    color: white;
-    -webkit-tap-highlight-color: transparent;
-    user-select: none;
-    touch-action: none;
-    @apply bg-background text-foreground;
-  }
-
   * {
     @apply border-border outline-ring/50;
+  }
+
+  body {
+    @apply bg-background text-foreground;
   }
 
   html {
     @apply font-sans;
   }
-}
-
-@layer utilities {
-  .custom-scrollbar::-webkit-scrollbar {
-    width: 4px;
-  }
-
-  .custom-scrollbar::-webkit-scrollbar-track {
-    background: transparent;
-  }
-
-  .custom-scrollbar::-webkit-scrollbar-thumb {
-    background: rgba(255, 255, 255, 0.1);
-    border-radius: 10px;
-  }
-}
-
-@theme inline {
-  --font-heading: var(--font-sans);
-  --font-sans: 'Inter Variable', sans-serif;
-  --color-sidebar-ring: var(--sidebar-ring);
-  --color-sidebar-border: var(--sidebar-border);
-  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
-  --color-sidebar-accent: var(--sidebar-accent);
-  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
-  --color-sidebar-primary: var(--sidebar-primary);
-  --color-sidebar-foreground: var(--sidebar-foreground);
-  --color-sidebar: var(--sidebar);
-  --color-chart-5: var(--chart-5);
-  --color-chart-4: var(--chart-4);
-  --color-chart-3: var(--chart-3);
-  --color-chart-2: var(--chart-2);
-  --color-chart-1: var(--chart-1);
-  --color-ring: var(--ring);
-  --color-input: var(--input);
-  --color-border: var(--border);
-  --color-destructive: var(--destructive);
-  --color-accent-foreground: var(--accent-foreground);
-  --color-accent: var(--accent);
-  --color-muted-foreground: var(--muted-foreground);
-  --color-muted: var(--muted);
-  --color-secondary-foreground: var(--secondary-foreground);
-  --color-secondary: var(--secondary);
-  --color-primary-foreground: var(--primary-foreground);
-  --color-primary: var(--primary);
-  --color-popover-foreground: var(--popover-foreground);
-  --color-popover: var(--popover);
-  --color-card-foreground: var(--card-foreground);
-  --color-card: var(--card);
-  --color-foreground: var(--foreground);
-  --color-background: var(--background);
-  --radius-sm: calc(var(--radius) * 0.6);
-  --radius-md: calc(var(--radius) * 0.8);
-  --radius-lg: var(--radius);
-  --radius-xl: calc(var(--radius) * 1.4);
-  --radius-2xl: calc(var(--radius) * 1.8);
-  --radius-3xl: calc(var(--radius) * 2.2);
-  --radius-4xl: calc(var(--radius) * 2.6);
 }

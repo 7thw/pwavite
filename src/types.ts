@@ -7,7 +7,7 @@ export interface Track {
   url: string;
 }
 
-export type RepeatMode = 'none' | 'all' | 'two' | 'three';
+export type RepeatMode = 'none' | 'one' | 'two' | 'three' | 'infinite';
 
 export interface AudioState {
   isPlaying: boolean;

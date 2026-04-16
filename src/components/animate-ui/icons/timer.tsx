@@ -1,7 +1,7 @@
 "use client";
 
 import * as React from "react";
-import { motion, type Variants } from "motion/react";
+import { motion, useAnimation, type Variants } from "motion/react";
 
 import {
   getVariants,
@@ -10,7 +10,12 @@ import {
   type IconProps,
 } from "@/components/animate-ui/icons/icon";
 
-type TimerProps = IconProps<keyof typeof animations>;
+type TimerProps = IconProps<keyof typeof animations> & {
+  /** When true, nudges the top crossbar down (press haptic feedback). */
+  pressed?: boolean;
+  /** When false, fades the clock hand out (duration badge is showing). */
+  handVisible?: boolean;
+};
 
 const animations = {
   default: {
@@ -34,21 +39,23 @@ const animations = {
         },
       },
     },
-    line2: {
-      initial: {
-        y: 0,
-      },
-      animate: {
-        y: [0, 1.5, 0],
-        transition: { ease: "easeInOut", duration: 0.3 },
-      },
-    },
+    /* line2 is driven by its own controls (see pressed prop) */
+    line2: {} as Variants,
   } satisfies Record<string, Variants>,
 } as const;
 
-function IconComponent({ size, ...props }: TimerProps) {
+function IconComponent({ size, pressed, handVisible = true, ...props }: TimerProps) {
   const { controls } = useAnimateIconContext();
   const variants = getVariants(animations);
+
+  /* ── line2 (top crossbar) press animation ── */
+  const line2Controls = useAnimation();
+  React.useEffect(() => {
+    line2Controls.start({
+      y: pressed ? 2 : 0,
+      transition: { ease: pressed ? "easeOut" : "easeIn", duration: 0.1 },
+    });
+  }, [pressed, line2Controls]);
 
   return (
     <motion.svg
@@ -71,23 +78,29 @@ function IconComponent({ size, ...props }: TimerProps) {
         initial="initial"
         animate={controls}
       />
-      <motion.line
-        x1={12}
-        x2={15}
-        y1={14}
-        y2={11}
-        variants={variants.line1}
-        initial="initial"
-        animate={controls}
-      />
+      {/* Clock hand — spins on activation; hidden while duration badge shows */}
+      <motion.g
+        animate={{ opacity: handVisible ? 1 : 0 }}
+        transition={{ ease: "easeInOut", duration: 0.3 }}
+      >
+        <motion.line
+          x1={12}
+          x2={12}
+          y1={14}
+          y2={10}
+          variants={variants.line1}
+          initial="initial"
+          animate={controls}
+        />
+      </motion.g>
+      {/* Top crossbar — pressed down independently */}
       <motion.line
         x1={10}
         x2={14}
-        y1={2}
-        y2={2}
-        variants={variants.line2}
-        initial="initial"
-        animate={controls}
+        y1={4}
+        y2={4}
+        strokeWidth={1.5}
+        animate={line2Controls}
       />
     </motion.svg>
   );
@@ -104,3 +117,5 @@ export {
   type TimerProps,
   type TimerProps as TimerIconProps,
 };
+
+

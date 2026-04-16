@@ -153,7 +153,8 @@ export const AudioProvider: React.FC<{ children: React.ReactNode; initialPlaylis
       const isLastTrack = s.currentTrackIndex === playlist.length - 1;
       
       if (isLastTrack) {
-        if (s.repeatMode === 'all') {
+        if (s.repeatMode === 'infinite') {
+          // Loop playlist forever
           return { ...s, currentTrackIndex: 0, currentTime: 0 };
         } else if (s.repeatMode === 'two' || s.repeatMode === 'three') {
           const maxRepeats = s.repeatMode === 'two' ? 2 : 3;
@@ -161,7 +162,7 @@ export const AudioProvider: React.FC<{ children: React.ReactNode; initialPlaylis
             return { ...s, currentTrackIndex: 0, currentTime: 0, repeatCount: s.repeatCount + 1 };
           }
         }
-        // If no more repeats, stop
+        // none / one / exhausted repeats — stop
         return { ...s, isPlaying: false, currentTime: 0 };
       }
       

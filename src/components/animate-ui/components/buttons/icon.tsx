@@ -62,15 +62,24 @@ function IconButton({
   const [key, setKey] = React.useState(0);
 
   return (
-    // @ts-ignore — render prop type mismatch in generated animate-ui code (motion v12+)
-    <Particles animate={isActive} key={key} render={<ButtonPrimitive data-slot="icon-button" className={cn(buttonVariants({ variant, size, className }))} onClick={(e) => {
-                setKey((prev) => prev + 1);
-                setIsActive(true);
-                onClick?.(e);
-              }} {...props} />}>{children}<ParticlesEffect
-                data-variant={variant}
-                className="bg-neutral-500 size-1 rounded-full"
-              /></Particles>
+    <Particles animate={isActive} key={key}>
+      <ButtonPrimitive
+        data-slot="icon-button"
+        className={cn(buttonVariants({ variant, size, className }))}
+        onClick={(e) => {
+          setKey((prev) => prev + 1);
+          setIsActive(true);
+          onClick?.(e);
+        }}
+        {...props}
+      >
+        {children}
+      </ButtonPrimitive>
+      <ParticlesEffect
+        data-variant={variant}
+        className="bg-neutral-500 size-1 rounded-full"
+      />
+    </Particles>
   );
 }
 
